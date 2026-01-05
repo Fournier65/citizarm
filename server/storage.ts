@@ -1,38 +1,35 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { db } from "./db";
+import {
+  contactMessages,
+  newsletterSubscribers,
+  type InsertContactMessage,
+  type ContactMessage,
+  type InsertSubscriber,
+  type Subscriber
+} from "@shared/schema";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
+  createSubscriber(subscriber: InsertSubscriber): Promise<Subscriber>;
+  getSubscriberByEmail(email: string): Promise<Subscriber | undefined>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-
-  constructor() {
-    this.users = new Map();
+export class DatabaseStorage implements IStorage {
+  async createContactMessage(message: InsertContactMessage): Promise<ContactMessage> {
+    const [newMessage] = await db.insert(contactMessages).values(message).returning();
+    return newMessage;
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async createSubscriber(subscriber: InsertSubscriber): Promise<Subscriber> {
+    const [newSubscriber] = await db.insert(newsletterSubscribers).values(subscriber).returning();
+    return newSubscriber;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async getSubscriberByEmail(email: string): Promise<Subscriber | undefined> {
+    const [subscriber] = await db.select().from(newsletterSubscribers).where(eq(newsletterSubscribers.email, email));
+    return subscriber;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
