@@ -61,12 +61,20 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="/#about" className="text-slate-400 hover:text-primary transition-colors">
+                <a 
+                  href="/#about" 
+                  onClick={(e) => { e.preventDefault(); window.location.href = '/#about'; }}
+                  className="text-slate-400 hover:text-primary transition-colors cursor-pointer"
+                >
                   À propos
                 </a>
               </li>
               <li>
-                <a href="/#product" className="text-slate-400 hover:text-primary transition-colors">
+                <a 
+                  href="/#product" 
+                  onClick={(e) => { e.preventDefault(); window.location.href = '/#product'; }}
+                  className="text-slate-400 hover:text-primary transition-colors cursor-pointer"
+                >
                   Notre Solution
                 </a>
               </li>
