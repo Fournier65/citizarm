@@ -55,11 +55,11 @@ export function Navigation() {
               Accueil
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
             </Link>
-            <a href="#about" className="text-sm font-medium transition-colors hover:text-primary relative group text-muted-foreground">
+            <a href="/#about" className="text-sm font-medium transition-colors hover:text-primary relative group text-muted-foreground">
               À propos
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
             </a>
-            <a href="#product" className="text-sm font-medium transition-colors hover:text-primary relative group text-muted-foreground">
+            <a href="/#product" className="text-sm font-medium transition-colors hover:text-primary relative group text-muted-foreground">
               Notre Solution
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
             </a>
@@ -101,10 +101,10 @@ export function Navigation() {
               <Link href="/" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
                 Accueil
               </Link>
-              <a href="#about" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
+              <a href="/#about" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
                 À propos
               </a>
-              <a href="#product" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
+              <a href="/#product" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
                 Notre Solution
               </a>
               <Link href="/contact" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">

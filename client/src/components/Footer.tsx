@@ -61,12 +61,12 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#about" className="text-slate-400 hover:text-primary transition-colors">
+                <a href="/#about" className="text-slate-400 hover:text-primary transition-colors">
                   À propos
                 </a>
               </li>
               <li>
-                <a href="#product" className="text-slate-400 hover:text-primary transition-colors">
+                <a href="/#product" className="text-slate-400 hover:text-primary transition-colors">
                   Notre Solution
                 </a>
               </li>
