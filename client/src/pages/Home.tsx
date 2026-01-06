@@ -5,7 +5,7 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SectionHeading } from "@/components/SectionHeading";
 import logo from "@assets/IMG_7582_1767640004029.jpeg";
-import aacScreenshot from "@assets/aac_1767721315936.jpg";
+import aacScreenshot from "@assets/image_1767721768477.png";
 
 // Use an abstract tech/connection background from Unsplash
 // Descriptive comment for image replacement:
