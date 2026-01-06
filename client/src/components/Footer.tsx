@@ -56,7 +56,7 @@ export function Footer() {
             <h4 className="font-display font-semibold text-lg !text-white">Navigation</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/" className="text-slate-400 hover:text-primary transition-colors">
+                <Link href="/" onClick={() => window.scrollTo(0, 0)} className="text-slate-400 hover:text-primary transition-colors">
                   Accueil
                 </Link>
               </li>
@@ -71,7 +71,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <Link href="/contact" className="text-slate-400 hover:text-primary transition-colors">
+                <Link href="/contact" onClick={() => window.scrollTo(0, 0)} className="text-slate-400 hover:text-primary transition-colors">
                   Contact
                 </Link>
               </li>
