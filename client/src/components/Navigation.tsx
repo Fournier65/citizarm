@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logo from "@assets/IMG_7582_1767640004029.jpeg";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -67,6 +68,7 @@ export function Navigation() {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
               </a>
             ))}
+            <ThemeToggle />
             <Link href="/contact">
               <button className="px-5 py-2.5 rounded-full bg-slate-900 text-white text-sm font-medium hover:bg-primary transition-colors duration-300 shadow-lg shadow-slate-900/10 hover:shadow-primary/25">
                 Nous contacter
@@ -104,6 +106,10 @@ export function Navigation() {
                   {link.label}
                 </a>
               ))}
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-sm text-slate-500">Thème</span>
+                <ThemeToggle />
+              </div>
               <Link href="/contact" onClick={() => setIsOpen(false)}>
                 <button className="w-full mt-2 py-3 rounded-xl bg-primary text-white font-medium shadow-lg shadow-primary/20">
                   Prendre rendez-vous
