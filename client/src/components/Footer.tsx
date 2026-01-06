@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { ArrowRight, Twitter, Linkedin, Facebook, Mail, MapPin } from "lucide-react";
 import { useSubscribeNewsletter } from "@/hooks/use-contact";
 import logo from "@assets/IMG_7582_1767640004029.jpeg";
@@ -7,6 +7,24 @@ import logo from "@assets/IMG_7582_1767640004029.jpeg";
 export function Footer() {
   const [email, setEmail] = useState("");
   const subscribe = useSubscribeNewsletter();
+  const [location, navigate] = useLocation();
+
+  const goToSection = (sectionId: string) => {
+    if (location !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,22 +79,20 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a 
-                  href="/#about" 
-                  onClick={(e) => { e.preventDefault(); window.location.href = '/#about'; }}
-                  className="text-slate-400 hover:text-primary transition-colors cursor-pointer"
+                <button 
+                  onClick={() => goToSection("about")}
+                  className="text-slate-400 hover:text-primary transition-colors cursor-pointer bg-transparent border-none p-0"
                 >
                   À propos
-                </a>
+                </button>
               </li>
               <li>
-                <a 
-                  href="/#product" 
-                  onClick={(e) => { e.preventDefault(); window.location.href = '/#product'; }}
-                  className="text-slate-400 hover:text-primary transition-colors cursor-pointer"
+                <button 
+                  onClick={() => goToSection("product")}
+                  className="text-slate-400 hover:text-primary transition-colors cursor-pointer bg-transparent border-none p-0"
                 >
                   Notre Solution
-                </a>
+                </button>
               </li>
               <li>
                 <Link href="/contact" onClick={() => window.scrollTo(0, 0)} className="text-slate-400 hover:text-primary transition-colors">

@@ -9,7 +9,24 @@ import { ThemeToggle } from "./ThemeToggle";
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
+
+  const goToSection = (sectionId: string) => {
+    if (location !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,22 +72,20 @@ export function Navigation() {
               Accueil
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
             </Link>
-            <a 
-              href="/#about" 
-              onClick={(e) => { e.preventDefault(); window.location.href = '/#about'; }}
-              className="text-sm font-medium transition-colors hover:text-primary relative group text-muted-foreground cursor-pointer"
+            <button 
+              onClick={() => goToSection("about")}
+              className="text-sm font-medium transition-colors hover:text-primary relative group text-muted-foreground cursor-pointer bg-transparent border-none"
             >
               À propos
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
-            </a>
-            <a 
-              href="/#product" 
-              onClick={(e) => { e.preventDefault(); window.location.href = '/#product'; }}
-              className="text-sm font-medium transition-colors hover:text-primary relative group text-muted-foreground cursor-pointer"
+            </button>
+            <button 
+              onClick={() => goToSection("product")}
+              className="text-sm font-medium transition-colors hover:text-primary relative group text-muted-foreground cursor-pointer bg-transparent border-none"
             >
               Notre Solution
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
-            </a>
+            </button>
             <Link href="/contact" onClick={() => window.scrollTo(0, 0)} className={cn(
               "text-sm font-medium transition-colors hover:text-primary relative group",
               location === "/contact" ? "text-primary" : "text-muted-foreground"
@@ -109,20 +124,18 @@ export function Navigation() {
               <Link href="/" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
                 Accueil
               </Link>
-              <a 
-                href="/#about" 
-                onClick={(e) => { e.preventDefault(); setIsOpen(false); window.location.href = '/#about'; }} 
-                className="text-lg font-medium text-muted-foreground py-2 border-b border-border cursor-pointer"
+              <button 
+                onClick={() => { setIsOpen(false); goToSection("about"); }} 
+                className="text-lg font-medium text-muted-foreground py-2 border-b border-border cursor-pointer text-left bg-transparent border-none w-full"
               >
                 À propos
-              </a>
-              <a 
-                href="/#product" 
-                onClick={(e) => { e.preventDefault(); setIsOpen(false); window.location.href = '/#product'; }} 
-                className="text-lg font-medium text-muted-foreground py-2 border-b border-border cursor-pointer"
+              </button>
+              <button 
+                onClick={() => { setIsOpen(false); goToSection("product"); }} 
+                className="text-lg font-medium text-muted-foreground py-2 border-b border-border cursor-pointer text-left bg-transparent border-none w-full"
               >
                 Notre Solution
-              </a>
+              </button>
               <Link href="/contact" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
                 Contact
               </Link>
