@@ -102,12 +102,15 @@ export function Navigation() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 text-muted-foreground hover:text-primary transition-colors"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X /> : <Menu />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              className="p-2 text-muted-foreground hover:text-primary transition-colors"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X /> : <Menu />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -139,10 +142,6 @@ export function Navigation() {
               <Link href="/contact" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
                 Contact
               </Link>
-              <div className="flex items-center justify-between mt-2">
-                <span className="text-sm text-muted-foreground">Thème</span>
-                <ThemeToggle />
-              </div>
               <Link href="/contact" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }}>
                 <button className="w-full mt-2 py-3 rounded-xl bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/20">
                   Prendre rendez-vous
