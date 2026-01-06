@@ -176,6 +176,15 @@ export default function Home() {
               className="relative"
             >
               <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border border-slate-100 bg-white">
+                {/* Browser Chrome */}
+                <div className="bg-slate-50 border-b border-slate-200 p-4 flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-400" />
+                  <div className="w-3 h-3 rounded-full bg-amber-400" />
+                  <div className="w-3 h-3 rounded-full bg-green-400" />
+                  <div className="ml-4 flex-1 bg-white h-8 rounded-md border border-slate-200 text-xs text-slate-400 flex items-center px-3">
+                    auxarmescitoyens.fr
+                  </div>
+                </div>
                 <img 
                   src={aacScreenshot} 
                   alt="AuxArmesCitoyens.fr - Espace Citoyen" 
