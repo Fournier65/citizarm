@@ -1,11 +1,114 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { ArrowRight, CheckCircle2, Shield, Users, Vote } from "lucide-react";
+import { ArrowRight, CheckCircle2, Shield, Users, Vote, ChevronLeft, ChevronRight } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SectionHeading } from "@/components/SectionHeading";
 import logo from "@assets/IMG_7582_1767640004029.jpeg";
-import aacScreenshot from "@assets/image_1767721768477.png";
+import aacScreenshot1 from "@assets/image_1767721768477.png";
+import aacScreenshot2 from "@assets/image_1767722378330.png";
+import aacScreenshot3 from "@assets/image_1767722411166.png";
+import aacScreenshot4 from "@assets/image_1767722513225.png";
+import aacScreenshot5 from "@assets/image_1767722701881.png";
+import aacScreenshot6 from "@assets/image_1767722742410.png";
+
+const screenshots = [
+  aacScreenshot1,
+  aacScreenshot2,
+  aacScreenshot3,
+  aacScreenshot4,
+  aacScreenshot5,
+  aacScreenshot6,
+];
+
+function ScreenshotCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % screenshots.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + screenshots.length) % screenshots.length);
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % screenshots.length);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 30 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
+      className="relative"
+    >
+      <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border border-border bg-background">
+        {/* Browser Chrome */}
+        <div className="bg-secondary border-b border-border p-4 flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-red-400" />
+          <div className="w-3 h-3 rounded-full bg-amber-400" />
+          <div className="w-3 h-3 rounded-full bg-green-400" />
+          <div className="ml-4 flex-1 bg-background h-8 rounded-md border border-border" />
+        </div>
+        
+        {/* Screenshot with transition */}
+        <div className="relative aspect-[16/10] overflow-hidden">
+          {screenshots.map((src, index) => (
+            <img
+              key={index}
+              src={src}
+              alt={`AuxArmesCitoyens.fr - Capture ${index + 1}`}
+              className={`absolute inset-0 w-full h-full object-cover object-left-top transition-opacity duration-500 ${
+                index === currentIndex ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Navigation arrows */}
+        <button
+          onClick={goToPrevious}
+          className="absolute left-3 top-1/2 translate-y-2 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center text-foreground hover:bg-background transition-colors"
+          data-testid="button-carousel-prev"
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <button
+          onClick={goToNext}
+          className="absolute right-3 top-1/2 translate-y-2 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center text-foreground hover:bg-background transition-colors"
+          data-testid="button-carousel-next"
+        >
+          <ChevronRight size={20} />
+        </button>
+      </div>
+
+      {/* Dots indicator */}
+      <div className="flex justify-center gap-2 mt-4">
+        {screenshots.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentIndex(index)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              index === currentIndex 
+                ? "bg-primary w-6" 
+                : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+            }`}
+            data-testid={`button-carousel-dot-${index}`}
+          />
+        ))}
+      </div>
+      
+      {/* Decor element */}
+      <div className="absolute -z-10 top-10 -right-10 w-full h-full bg-primary/10 rounded-3xl" />
+    </motion.div>
+  );
+}
 
 // Use an abstract tech/connection background from Unsplash
 // Descriptive comment for image replacement:
@@ -170,35 +273,7 @@ export default function Home() {
               </a>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="relative"
-            >
-              <a href="https://auxarmescitoyens.fr" target="_blank" rel="noopener noreferrer" className="block">
-                <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border border-border bg-background cursor-pointer hover:shadow-3xl transition-shadow duration-300">
-                  {/* Browser Chrome */}
-                  <div className="bg-secondary border-b border-border p-4 flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-400" />
-                    <div className="w-3 h-3 rounded-full bg-amber-400" />
-                    <div className="w-3 h-3 rounded-full bg-green-400" />
-                    <div className="ml-4 flex-1 bg-background h-8 rounded-md border border-border text-xs text-muted-foreground flex items-center px-3">
-                      auxarmescitoyens.fr
-                    </div>
-                  </div>
-                  <img 
-                    src={aacScreenshot} 
-                    alt="AuxArmesCitoyens.fr - Espace Citoyen" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </a>
-              
-              {/* Decor element */}
-              <div className="absolute -z-10 top-10 -right-10 w-full h-full bg-primary/10 rounded-3xl" />
-            </motion.div>
+            <ScreenshotCarousel />
           </div>
         </div>
       </section>
