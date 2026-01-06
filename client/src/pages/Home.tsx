@@ -16,10 +16,10 @@ import aacScreenshot6 from "@assets/image_1767722742410.png";
 const screenshots = [
   aacScreenshot1,
   aacScreenshot2,
+  aacScreenshot6,
   aacScreenshot3,
   aacScreenshot4,
   aacScreenshot5,
-  aacScreenshot6,
 ];
 
 function ScreenshotCarousel() {
