@@ -55,18 +55,26 @@ export function Footer() {
           <div className="lg:col-span-2 space-y-6">
             <h4 className="font-display font-semibold text-lg !text-white">Navigation</h4>
             <ul className="space-y-3">
-              {[
-                { label: "Accueil", href: "/" },
-                { label: "À propos", href: "#about" },
-                { label: "Notre Solution", href: "#product" },
-                { label: "Contact", href: "/contact" },
-              ].map((link) => (
-                <li key={link.label}>
-                  <Link href={link.href} className="text-slate-400 hover:text-primary transition-colors">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link href="/" className="text-slate-400 hover:text-primary transition-colors">
+                  Accueil
+                </Link>
+              </li>
+              <li>
+                <a href="#about" className="text-slate-400 hover:text-primary transition-colors">
+                  À propos
+                </a>
+              </li>
+              <li>
+                <a href="#product" className="text-slate-400 hover:text-primary transition-colors">
+                  Notre Solution
+                </a>
+              </li>
+              <li>
+                <Link href="/contact" className="text-slate-400 hover:text-primary transition-colors">
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
 

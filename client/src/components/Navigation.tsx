@@ -19,13 +19,6 @@ export function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { href: "/", label: "Accueil" },
-    { href: "#about", label: "À propos" },
-    { href: "#product", label: "Notre Solution" },
-    { href: "/contact", label: "Contact" },
-  ];
-
   return (
     <nav
       className={cn(
@@ -55,19 +48,28 @@ export function Navigation() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary relative group",
-                  location === link.href ? "text-primary" : "text-muted-foreground"
-                )}
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
-              </a>
-            ))}
+            <Link href="/" className={cn(
+              "text-sm font-medium transition-colors hover:text-primary relative group",
+              location === "/" ? "text-primary" : "text-muted-foreground"
+            )}>
+              Accueil
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
+            </Link>
+            <a href="#about" className="text-sm font-medium transition-colors hover:text-primary relative group text-muted-foreground">
+              À propos
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
+            </a>
+            <a href="#product" className="text-sm font-medium transition-colors hover:text-primary relative group text-muted-foreground">
+              Notre Solution
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
+            </a>
+            <Link href="/contact" className={cn(
+              "text-sm font-medium transition-colors hover:text-primary relative group",
+              location === "/contact" ? "text-primary" : "text-muted-foreground"
+            )}>
+              Contact
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
+            </Link>
             <ThemeToggle />
             <Link href="/contact">
               <button className="px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors duration-300 shadow-lg">
@@ -96,16 +98,18 @@ export function Navigation() {
             className="md:hidden bg-background border-b border-border overflow-hidden"
           >
             <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="text-lg font-medium text-muted-foreground py-2 border-b border-border"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ))}
+              <Link href="/" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
+                Accueil
+              </Link>
+              <a href="#about" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
+                À propos
+              </a>
+              <a href="#product" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
+                Notre Solution
+              </a>
+              <Link href="/contact" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
+                Contact
+              </Link>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-sm text-muted-foreground">Thème</span>
                 <ThemeToggle />
