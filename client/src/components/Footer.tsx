@@ -53,7 +53,7 @@ export function Footer() {
 
           {/* Links Columns */}
           <div className="lg:col-span-2 space-y-6">
-            <h4 className="font-display font-semibold text-lg">Navigation</h4>
+            <h4 className="font-display font-semibold text-lg !text-white">Navigation</h4>
             <ul className="space-y-3">
               {[
                 { label: "Accueil", href: "/" },
@@ -71,7 +71,7 @@ export function Footer() {
           </div>
 
           <div className="lg:col-span-3 space-y-6">
-            <h4 className="font-display font-semibold text-lg">Contact</h4>
+            <h4 className="font-display font-semibold text-lg !text-white">Contact</h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-slate-400">
                 <MapPin className="shrink-0 mt-1 text-primary" size={18} />
@@ -91,7 +91,7 @@ export function Footer() {
 
           {/* Newsletter Column */}
           <div className="lg:col-span-3 space-y-6">
-            <h4 className="font-display font-semibold text-lg">Newsletter</h4>
+            <h4 className="font-display font-semibold text-lg !text-white">Newsletter</h4>
             <p className="text-slate-400 text-sm">
               Restez informé de nos dernières innovations démocratiques.
             </p>
