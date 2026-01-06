@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { ArrowRight, Twitter, Linkedin, Facebook, Mail, MapPin } from "lucide-react";
+import { ArrowRight, Mail, MapPin } from "lucide-react";
+import { SiX } from "react-icons/si";
 import { useSubscribeNewsletter } from "@/hooks/use-contact";
 import logo from "@assets/IMG_7582_1767640004029.jpeg";
 
@@ -57,15 +58,15 @@ export function Footer() {
               Armer les esprits pour une citoyenneté éclairée et active.
             </p>
             <div className="flex gap-4 pt-2">
-              {[Twitter, Linkedin, Facebook].map((Icon, i) => (
-                <a 
-                  key={i} 
-                  href="#" 
-                  className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300 text-slate-400"
-                >
-                  <Icon size={18} />
-                </a>
-              ))}
+              <a 
+                href="https://x.com/citiZarm89" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300 text-slate-400"
+                data-testid="link-x-social"
+              >
+                <SiX size={16} />
+              </a>
             </div>
           </div>
 
