@@ -207,10 +207,10 @@ export default function Home() {
       <section className="py-24 bg-primary relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
-          <h2 className="font-display font-bold text-3xl md:text-5xl text-white mb-6">
+          <h2 className="font-display font-bold text-3xl md:text-5xl !text-white mb-6">
             Prêt à changer les choses ?
           </h2>
-          <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+          <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-10">
             Rejoignez le mouvement citiZarm et participez à la construction de la démocratie de demain.
           </p>
           <Link href="/contact">
