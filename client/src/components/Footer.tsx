@@ -153,8 +153,7 @@ export function Footer() {
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
           <p>© {new Date().getFullYear()} citiZarm. Tous droits réservés.</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">Mentions légales</a>
-            <a href="#" className="hover:text-white transition-colors">Politique de confidentialité</a>
+            <Link href="/mentions-legales" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition-colors">Mentions légales</Link>
           </div>
         </div>
       </div>
