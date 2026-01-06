@@ -163,9 +163,11 @@ export default function Home() {
                 ))}
               </ul>
 
-              <button className="px-8 py-4 rounded-xl bg-slate-900 text-white font-semibold hover:bg-primary transition-colors duration-300 flex items-center gap-2">
-                Visiter la plateforme <ArrowRight size={18} />
-              </button>
+              <a href="https://auxarmescitoyens.fr" target="_blank" rel="noopener noreferrer">
+                <button className="px-8 py-4 rounded-xl bg-slate-900 text-white font-semibold hover:bg-primary transition-colors duration-300 flex items-center gap-2">
+                  Visiter la plateforme <ArrowRight size={18} />
+                </button>
+              </a>
             </motion.div>
 
             <motion.div
