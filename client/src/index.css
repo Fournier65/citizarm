@@ -68,7 +68,7 @@
   
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    @apply font-bold tracking-tight text-slate-900 dark:text-slate-100;
+    @apply font-bold tracking-tight text-foreground;
   }
 }
 
@@ -87,11 +87,11 @@
 
 /* Glassmorphism utilities */
 .glass {
-  @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl;
+  @apply bg-background/70 backdrop-blur-lg border border-border/20 shadow-xl;
 }
 
 .glass-card {
-  @apply bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300;
+  @apply bg-background rounded-2xl border border-border shadow-sm hover:shadow-md transition-all duration-300;
 }
 
 /* Animated Gradient Text */

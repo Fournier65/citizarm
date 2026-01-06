@@ -33,7 +33,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
 
       <main className="pt-32 pb-24">
@@ -53,41 +53,41 @@ export default function Contact() {
               transition={{ duration: 0.5 }}
               className="lg:col-span-1"
             >
-              <div className="bg-slate-900 text-white rounded-2xl p-8 h-full shadow-xl relative overflow-hidden">
+              <div className="bg-foreground text-background rounded-2xl p-8 h-full shadow-xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -mr-32 -mt-32"></div>
                 
                 <h3 className="text-2xl font-display font-bold mb-6 relative z-10">Informations</h3>
-                <p className="text-slate-300 mb-8 relative z-10">
+                <p className="text-muted mb-8 relative z-10 opacity-80">
                   Remplissez le formulaire et notre équipe vous répondra dans les 24 heures.
                 </p>
 
                 <div className="space-y-6 relative z-10">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center shrink-0">
                       <Phone size={18} className="text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium text-sm text-slate-400 uppercase tracking-wide">Téléphone</p>
+                      <p className="font-medium text-sm opacity-60 uppercase tracking-wide">Téléphone</p>
                       <p className="font-semibold text-lg">+33 1 23 45 67 89</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center shrink-0">
                       <Mail size={18} className="text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium text-sm text-slate-400 uppercase tracking-wide">Email</p>
+                      <p className="font-medium text-sm opacity-60 uppercase tracking-wide">Email</p>
                       <p className="font-semibold text-lg">contact@citizarm.fr</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center shrink-0">
                       <MapPin size={18} className="text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium text-sm text-slate-400 uppercase tracking-wide">Adresse</p>
+                      <p className="font-medium text-sm opacity-60 uppercase tracking-wide">Adresse</p>
                       <p className="font-semibold text-lg">123 Avenue de la République<br/>75011 Paris, France</p>
                     </div>
                   </div>
@@ -102,11 +102,11 @@ export default function Contact() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="lg:col-span-2"
             >
-              <div className="bg-white rounded-2xl p-8 md:p-10 shadow-sm border border-slate-100">
+              <div className="bg-secondary rounded-2xl p-8 md:p-10 shadow-sm border border-border">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label htmlFor="name" className="text-sm font-semibold text-slate-700">
+                      <label htmlFor="name" className="text-sm font-semibold text-foreground">
                         Nom complet
                       </label>
                       <input
@@ -114,7 +114,7 @@ export default function Contact() {
                         type="text"
                         placeholder="Jean Dupont"
                         {...register("name")}
-                        className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
                       />
                       {errors.name && (
                         <p className="text-sm text-red-500">{errors.name.message}</p>
@@ -122,7 +122,7 @@ export default function Contact() {
                     </div>
 
                     <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-semibold text-slate-700">
+                      <label htmlFor="email" className="text-sm font-semibold text-foreground">
                         Email
                       </label>
                       <input
@@ -130,7 +130,7 @@ export default function Contact() {
                         type="email"
                         placeholder="jean@exemple.fr"
                         {...register("email")}
-                        className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
                       />
                       {errors.email && (
                         <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -139,7 +139,7 @@ export default function Contact() {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="subject" className="text-sm font-semibold text-slate-700">
+                    <label htmlFor="subject" className="text-sm font-semibold text-foreground">
                       Sujet
                     </label>
                     <input
@@ -147,7 +147,7 @@ export default function Contact() {
                       type="text"
                       placeholder="Demande d'information..."
                       {...register("subject")}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                      className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
                     />
                     {errors.subject && (
                       <p className="text-sm text-red-500">{errors.subject.message}</p>
@@ -155,7 +155,7 @@ export default function Contact() {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="message" className="text-sm font-semibold text-slate-700">
+                    <label htmlFor="message" className="text-sm font-semibold text-foreground">
                       Message
                     </label>
                     <textarea
@@ -163,7 +163,7 @@ export default function Contact() {
                       rows={5}
                       placeholder="Comment pouvons-nous vous aider ?"
                       {...register("message")}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all resize-none"
+                      className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all resize-none"
                     />
                     {errors.message && (
                       <p className="text-sm text-red-500">{errors.message.message}</p>
@@ -173,7 +173,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={submitContact.isPending}
-                    className="w-full md:w-auto px-8 py-4 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/25 hover:bg-blue-600 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full md:w-auto px-8 py-4 rounded-xl bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:bg-primary/90 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {submitContact.isPending ? (
                       <>

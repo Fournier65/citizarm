@@ -18,11 +18,11 @@ export function SectionHeading({ title, subtitle, align = "center", className }:
         transition={{ duration: 0.5 }}
       >
         {subtitle && (
-          <span className="inline-block py-1 px-3 rounded-full bg-blue-50 text-blue-600 text-sm font-semibold tracking-wide uppercase mb-4 border border-blue-100">
+          <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-sm font-semibold tracking-wide uppercase mb-4 border border-primary/20">
             {subtitle}
           </span>
         )}
-        <h2 className="font-display font-bold text-3xl md:text-4xl lg:text-5xl text-slate-900 leading-tight">
+        <h2 className="font-display font-bold text-3xl md:text-4xl lg:text-5xl text-foreground leading-tight">
           {title}
         </h2>
         <div 

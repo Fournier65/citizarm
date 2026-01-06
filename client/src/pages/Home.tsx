@@ -14,7 +14,7 @@ const HERO_BG = "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Navigation />
 
       {/* HERO SECTION */}
@@ -24,9 +24,9 @@ export default function Home() {
           <img 
             src={HERO_BG} 
             alt="Background" 
-            className="w-full h-full object-cover opacity-10"
+            className="w-full h-full object-cover opacity-10 dark:opacity-5"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/50 to-white" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/50 to-background" />
         </div>
 
         <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -37,7 +37,7 @@ export default function Home() {
               transition={{ duration: 0.5 }}
               className="mb-8 flex justify-center"
             >
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl shadow-xl overflow-hidden border-4 border-white bg-white">
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl shadow-xl overflow-hidden border-4 border-background bg-background">
                 <img src={logo} alt="citiZarm Logo" className="w-full h-full object-cover" />
               </div>
             </motion.div>
@@ -46,7 +46,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-display font-extrabold text-5xl md:text-7xl text-slate-900 mb-6 leading-[1.1]"
+              className="font-display font-extrabold text-5xl md:text-7xl text-foreground mb-6 leading-[1.1]"
             >
               Armer les <span className="text-primary">esprits</span> pour la démocratie
             </motion.h1>
@@ -55,7 +55,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg md:text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed"
+              className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed"
             >
               Chez citiZarm, nous développons des outils numériques innovants pour renforcer 
               la démocratie directe et permettre à chaque citoyen de s'exprimer.
@@ -68,12 +68,12 @@ export default function Home() {
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
               <a href="#product">
-                <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-primary text-white font-semibold text-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2">
+                <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-primary text-primary-foreground font-semibold text-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2">
                   Découvrir notre solution <ArrowRight size={20} />
                 </button>
               </a>
               <Link href="/contact">
-                <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-white text-slate-700 border border-slate-200 font-semibold text-lg hover:bg-slate-50 hover:border-slate-300 transition-all duration-300">
+                <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-secondary text-secondary-foreground border border-border font-semibold text-lg hover:bg-muted transition-all duration-300">
                   Nous contacter
                 </button>
               </Link>
@@ -83,7 +83,7 @@ export default function Home() {
       </section>
 
       {/* ABOUT SECTION */}
-      <section id="about" className="py-24 bg-slate-50">
+      <section id="about" className="py-24 bg-secondary">
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeading 
             title="Notre Mission" 
@@ -115,13 +115,13 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow"
+                className="bg-background p-8 rounded-2xl border border-border shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="w-14 h-14 rounded-xl bg-blue-50 text-primary flex items-center justify-center mb-6">
+                <div className="w-14 h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6">
                   <feature.icon size={32} />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3 font-display">{feature.title}</h3>
-                <p className="text-slate-600 leading-relaxed">{feature.description}</p>
+                <h3 className="text-xl font-bold text-foreground mb-3 font-display">{feature.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -129,7 +129,7 @@ export default function Home() {
       </section>
 
       {/* PRODUCT SECTION */}
-      <section id="product" className="py-24 bg-white relative overflow-hidden">
+      <section id="product" className="py-24 bg-background relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -141,10 +141,10 @@ export default function Home() {
               <span className="text-primary font-bold tracking-wider uppercase text-sm mb-2 block">
                 Notre Application Phare
               </span>
-              <h2 className="font-display font-bold text-4xl md:text-5xl text-slate-900 mb-6 leading-tight">
+              <h2 className="font-display font-bold text-4xl md:text-5xl text-foreground mb-6 leading-tight">
                 AuxArmesCitoyens.fr
               </h2>
-              <p className="text-lg text-slate-600 mb-8 leading-relaxed">
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                 Une plateforme révolutionnaire conçue pour redonner le pouvoir d'agir aux citoyens.
                 Débattez, proposez, et votez sur les sujets qui comptent vraiment pour votre communauté.
               </p>
@@ -156,7 +156,7 @@ export default function Home() {
                   "Propositions citoyennes directes",
                   "Interface intuitive et accessible"
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-slate-700 font-medium">
+                  <li key={i} className="flex items-center gap-3 text-foreground font-medium">
                     <CheckCircle2 className="text-green-500 shrink-0" />
                     {item}
                   </li>
@@ -164,7 +164,7 @@ export default function Home() {
               </ul>
 
               <a href="https://auxarmescitoyens.fr" target="_blank" rel="noopener noreferrer">
-                <button className="px-8 py-4 rounded-xl bg-slate-900 text-white font-semibold hover:bg-primary transition-colors duration-300 flex items-center gap-2">
+                <button className="px-8 py-4 rounded-xl bg-foreground text-background font-semibold hover:bg-primary hover:text-primary-foreground transition-colors duration-300 flex items-center gap-2">
                   Visiter la plateforme <ArrowRight size={18} />
                 </button>
               </a>
@@ -178,13 +178,13 @@ export default function Home() {
               className="relative"
             >
               <a href="https://auxarmescitoyens.fr" target="_blank" rel="noopener noreferrer" className="block">
-                <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border border-slate-100 bg-white cursor-pointer hover:shadow-3xl transition-shadow duration-300">
+                <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border border-border bg-background cursor-pointer hover:shadow-3xl transition-shadow duration-300">
                   {/* Browser Chrome */}
-                  <div className="bg-slate-50 border-b border-slate-200 p-4 flex items-center gap-2">
+                  <div className="bg-secondary border-b border-border p-4 flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-red-400" />
                     <div className="w-3 h-3 rounded-full bg-amber-400" />
                     <div className="w-3 h-3 rounded-full bg-green-400" />
-                    <div className="ml-4 flex-1 bg-white h-8 rounded-md border border-slate-200 text-xs text-slate-400 flex items-center px-3">
+                    <div className="ml-4 flex-1 bg-background h-8 rounded-md border border-border text-xs text-muted-foreground flex items-center px-3">
                       auxarmescitoyens.fr
                     </div>
                   </div>
