@@ -21,8 +21,8 @@ export function Navigation() {
 
   const navLinks = [
     { href: "/", label: "Accueil" },
-    { href: "/#about", label: "À propos" },
-    { href: "/#product", label: "Notre Solution" },
+    { href: "#about", label: "À propos" },
+    { href: "#product", label: "Notre Solution" },
     { href: "/contact", label: "Contact" },
   ];
 
