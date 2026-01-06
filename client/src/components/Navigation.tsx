@@ -48,7 +48,7 @@ export function Navigation() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/" className={cn(
+            <Link href="/" onClick={() => window.scrollTo(0, 0)} className={cn(
               "text-sm font-medium transition-colors hover:text-primary relative group",
               location === "/" ? "text-primary" : "text-muted-foreground"
             )}>
@@ -63,7 +63,7 @@ export function Navigation() {
               Notre Solution
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
             </a>
-            <Link href="/contact" className={cn(
+            <Link href="/contact" onClick={() => window.scrollTo(0, 0)} className={cn(
               "text-sm font-medium transition-colors hover:text-primary relative group",
               location === "/contact" ? "text-primary" : "text-muted-foreground"
             )}>
@@ -71,7 +71,7 @@ export function Navigation() {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
             </Link>
             <ThemeToggle />
-            <Link href="/contact">
+            <Link href="/contact" onClick={() => window.scrollTo(0, 0)}>
               <button className="px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors duration-300 shadow-lg">
                 Nous contacter
               </button>
@@ -98,7 +98,7 @@ export function Navigation() {
             className="md:hidden bg-background border-b border-border overflow-hidden"
           >
             <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
-              <Link href="/" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
+              <Link href="/" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
                 Accueil
               </Link>
               <a href="#about" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
@@ -107,14 +107,14 @@ export function Navigation() {
               <a href="#product" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
                 Notre Solution
               </a>
-              <Link href="/contact" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
+              <Link href="/contact" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
                 Contact
               </Link>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-sm text-muted-foreground">Thème</span>
                 <ThemeToggle />
               </div>
-              <Link href="/contact" onClick={() => setIsOpen(false)}>
+              <Link href="/contact" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }}>
                 <button className="w-full mt-2 py-3 rounded-xl bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/20">
                   Prendre rendez-vous
                 </button>
