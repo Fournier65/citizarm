@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { ArrowRight, CheckCircle2, Shield, Users, Vote, MessageSquare } from "lucide-react";
+import { ArrowRight, CheckCircle2, Shield, Users, Vote } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SectionHeading } from "@/components/SectionHeading";
 import logo from "@assets/IMG_7582_1767640004029.jpeg";
+import aacScreenshot from "@assets/aac_1767721315936.jpg";
 
 // Use an abstract tech/connection background from Unsplash
 // Descriptive comment for image replacement:
@@ -175,27 +176,11 @@ export default function Home() {
               className="relative"
             >
               <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border border-slate-100 bg-white">
-                {/* Product UI Mockup Representation */}
-                <div className="bg-slate-50 border-b border-slate-200 p-4 flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-400" />
-                  <div className="w-3 h-3 rounded-full bg-amber-400" />
-                  <div className="w-3 h-3 rounded-full bg-green-400" />
-                  <div className="ml-4 flex-1 bg-white h-8 rounded-md border border-slate-200 text-xs text-slate-400 flex items-center px-3">
-                    auxarmescitoyens.fr
-                  </div>
-                </div>
-                <div className="p-8 aspect-[4/3] flex flex-col items-center justify-center bg-slate-50 relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 opacity-50" />
-                  <MessageSquare size={64} className="text-primary mb-4 relative z-10" />
-                  <h3 className="text-2xl font-display font-bold text-slate-900 mb-2 relative z-10">Espace Citoyen</h3>
-                  <p className="text-slate-500 text-center max-w-xs relative z-10">
-                    Connectez-vous pour participer aux débats en cours
-                  </p>
-                  
-                  {/* Abstract UI elements floating */}
-                  <div className="absolute top-10 right-10 w-24 h-24 bg-white rounded-xl shadow-lg opacity-60 transform rotate-12 group-hover:rotate-6 transition-transform duration-500" />
-                  <div className="absolute bottom-10 left-10 w-32 h-16 bg-white rounded-xl shadow-lg opacity-60 transform -rotate-6 group-hover:-rotate-3 transition-transform duration-500" />
-                </div>
+                <img 
+                  src={aacScreenshot} 
+                  alt="AuxArmesCitoyens.fr - Espace Citoyen" 
+                  className="w-full h-auto object-cover"
+                />
               </div>
               
               {/* Decor element */}
