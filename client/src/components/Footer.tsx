@@ -109,7 +109,7 @@ export function Footer() {
               <li className="flex items-start gap-3 text-slate-400">
                 <MapPin className="shrink-0 mt-1 text-primary" size={18} />
                 <span>
-                  123 Avenue de la République<br />
+                  84, avenue de la République<br />
                   75011 Paris, France
                 </span>
               </li>

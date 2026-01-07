@@ -19,10 +19,10 @@ export default function Legal() {
               </h2>
               <p className="text-muted-foreground leading-relaxed">
                 Le site citiZarm.fr est édité par :<br />
-                <strong className="text-foreground">citiZarm</strong><br />
-                Forme juridique : [À compléter]<br />
-                Capital social : [À compléter]<br />
-                Siège social : 123 Avenue de la République, 75011 Paris, France<br />
+                <strong className="text-foreground">CitiZarm</strong><br />
+                Forme juridique : SARL<br />
+                Capital social : 5 000 €<br />
+                Siège social : 84, avenue de la République, 75011 Paris, France<br />
                 RCS : [À compléter]<br />
                 SIRET : [À compléter]<br />
                 Numéro de TVA intracommunautaire : [À compléter]
@@ -126,7 +126,7 @@ export default function Legal() {
               <p className="text-muted-foreground leading-relaxed">
                 Pour toute question relative aux présentes mentions légales, vous pouvez nous contacter :<br />
                 Email : <a href="mailto:contact@citizarm.fr" className="text-primary hover:underline">contact@citizarm.fr</a><br />
-                Adresse : 123 Avenue de la République, 75011 Paris, France
+                Adresse : 84, avenue de la République, 75011 Paris, France
               </p>
             </section>
           </div>
