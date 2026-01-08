@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { Link } from "wouter";
 import { ArrowRight, CheckCircle2, Shield, Users, Vote, ChevronLeft, ChevronRight } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
@@ -24,20 +24,48 @@ const screenshots = [
 
 function ScreenshotCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
 
   useEffect(() => {
     const timer = setInterval(() => {
+      setDirection(1);
       setCurrentIndex((prev) => (prev + 1) % screenshots.length);
     }, 4000);
     return () => clearInterval(timer);
   }, []);
 
   const goToPrevious = () => {
+    setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + screenshots.length) % screenshots.length);
   };
 
   const goToNext = () => {
+    setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % screenshots.length);
+  };
+
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const threshold = 50;
+    if (info.offset.x < -threshold) {
+      goToNext();
+    } else if (info.offset.x > threshold) {
+      goToPrevious();
+    }
+  };
+
+  const slideVariants = {
+    enter: (dir: number) => ({
+      x: dir > 0 ? "100%" : "-100%",
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exit: (dir: number) => ({
+      x: dir > 0 ? "-100%" : "100%",
+      opacity: 0,
+    }),
   };
 
   return (
@@ -57,31 +85,41 @@ function ScreenshotCarousel() {
           <div className="ml-4 flex-1 bg-background h-8 rounded-md border border-border" />
         </div>
         
-        {/* Screenshot with transition */}
-        <div className="relative aspect-[16/10] overflow-hidden">
-          {screenshots.map((src, index) => (
-            <img
-              key={index}
-              src={src}
-              alt={`AuxArmesCitoyens.fr - Capture ${index + 1}`}
-              className={`absolute inset-0 w-full h-full object-cover object-left-top transition-opacity duration-500 ${
-                index === currentIndex ? "opacity-100" : "opacity-0"
-              }`}
+        {/* Screenshot with slide transition and swipe support */}
+        <div 
+          className="relative aspect-[16/10] overflow-hidden touch-pan-y"
+        >
+          <AnimatePresence initial={false} custom={direction} mode="popLayout">
+            <motion.img
+              key={currentIndex}
+              src={screenshots[currentIndex]}
+              alt={`AuxArmesCitoyens.fr - Capture ${currentIndex + 1}`}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ type: "tween", duration: 0.4, ease: "easeInOut" }}
+              className="absolute inset-0 w-full h-full object-cover object-left-top cursor-grab active:cursor-grabbing"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              onDragEnd={handleDragEnd}
             />
-          ))}
+          </AnimatePresence>
         </div>
 
-        {/* Navigation arrows */}
+        {/* Navigation arrows - hidden on mobile */}
         <button
           onClick={goToPrevious}
-          className="absolute left-3 top-1/2 translate-y-2 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center text-foreground hover:bg-background transition-colors"
+          className="absolute left-3 top-1/2 translate-y-2 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border hidden md:flex items-center justify-center text-foreground hover:bg-background transition-colors"
           data-testid="button-carousel-prev"
         >
           <ChevronLeft size={20} />
         </button>
         <button
           onClick={goToNext}
-          className="absolute right-3 top-1/2 translate-y-2 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center text-foreground hover:bg-background transition-colors"
+          className="absolute right-3 top-1/2 translate-y-2 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border hidden md:flex items-center justify-center text-foreground hover:bg-background transition-colors"
           data-testid="button-carousel-next"
         >
           <ChevronRight size={20} />
@@ -93,7 +131,10 @@ function ScreenshotCarousel() {
         {screenshots.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentIndex(index)}
+            onClick={() => {
+              setDirection(index > currentIndex ? 1 : -1);
+              setCurrentIndex(index);
+            }}
             className={`w-2 h-2 rounded-full transition-all ${
               index === currentIndex 
                 ? "bg-primary w-6" 
