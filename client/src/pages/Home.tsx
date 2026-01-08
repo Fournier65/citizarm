@@ -26,11 +26,19 @@ function ScreenshotCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
 
+  // Preload all carousel images on mount for smoother transitions
+  useEffect(() => {
+    screenshots.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setDirection(1);
       setCurrentIndex((prev) => (prev + 1) % screenshots.length);
-    }, 4000);
+    }, 7000);
     return () => clearInterval(timer);
   }, []);
 
