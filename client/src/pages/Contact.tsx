@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react";
+import { SiX } from "react-icons/si";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SectionHeading } from "@/components/SectionHeading";
@@ -89,6 +90,24 @@ export default function Contact() {
                     <div>
                       <p className="font-medium text-sm text-slate-400 uppercase tracking-wide">Adresse</p>
                       <p className="font-semibold text-lg text-white">84, avenue de la République<br/>75011 Paris, France</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                      <SiX size={18} className="text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm text-slate-400 uppercase tracking-wide">Suivez-nous</p>
+                      <a 
+                        href="https://x.com/citiZarm89" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="font-semibold text-lg text-white hover:text-primary transition-colors"
+                        data-testid="link-x-contact"
+                      >
+                        @citiZarm89
+                      </a>
                     </div>
                   </div>
                 </div>
