@@ -57,17 +57,6 @@ export function Footer() {
               Développer la démocratie directe grâce à des outils numériques innovants. 
               Armer les esprits pour une citoyenneté éclairée et active.
             </p>
-            <div className="flex gap-4 pt-2">
-              <a 
-                href="https://x.com/citiZarm89" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300 text-slate-400"
-                data-testid="link-x-social"
-              >
-                <SiX size={16} />
-              </a>
-            </div>
           </div>
 
           {/* Links Columns */}
@@ -117,6 +106,18 @@ export function Footer() {
                 <Mail className="shrink-0 text-primary" size={18} />
                 <a href="mailto:contact@citizarm.fr" className="hover:text-white transition-colors">
                   contact@citizarm.fr
+                </a>
+              </li>
+              <li className="flex items-center gap-3 text-slate-400">
+                <SiX className="shrink-0 text-primary" size={16} />
+                <a 
+                  href="https://x.com/citiZarm89" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors"
+                  data-testid="link-x-footer-contact"
+                >
+                  @citiZarm89
                 </a>
               </li>
             </ul>
