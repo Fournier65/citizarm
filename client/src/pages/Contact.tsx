@@ -88,7 +88,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <p className="font-medium text-sm text-slate-400 uppercase tracking-wide">Adresse</p>
-                      <p className="font-semibold text-lg text-white">123 Avenue de la République<br/>75011 Paris, France</p>
+                      <p className="font-semibold text-lg text-white">84, avenue de la République<br/>75011 Paris, France</p>
                     </div>
                   </div>
                 </div>
