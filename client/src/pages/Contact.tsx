@@ -68,7 +68,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <p className="font-medium text-sm text-slate-400 uppercase tracking-wide">Téléphone</p>
-                      <p className="font-semibold text-lg text-white">+33 1 23 45 67 89</p>
+                      <p className="font-semibold text-lg text-white">+33 1 45 25 68 33</p>
                     </div>
                   </div>
 
