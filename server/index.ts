@@ -6,6 +6,17 @@ import { createServer } from "http";
 const app = express();
 const httpServer = createServer(app);
 
+// Redirect www to non-www for SEO and SSL certificate consistency
+app.use((req, res, next) => {
+  const host = req.hostname;
+  if (host.startsWith('www.')) {
+    const newHost = host.replace(/^www\./, '');
+    const redirectUrl = `https://${newHost}${req.originalUrl}`;
+    return res.redirect(301, redirectUrl);
+  }
+  next();
+});
+
 declare module "http" {
   interface IncomingMessage {
     rawBody: unknown;
