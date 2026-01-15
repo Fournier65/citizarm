@@ -65,12 +65,31 @@
         "description": "Le premier réseau social dédié à la démocratie participative. Proposez vos référendums, soutenez les initiatives, débattez des idées et faites entendre votre voix.",
         "applicationCategory": "SocialNetworkingApplication",
         "operatingSystem": "Web",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "EUR",
-          "description": "Inscription gratuite pour les citoyens"
-        },
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Citoyen",
+            "price": "0",
+            "priceCurrency": "EUR",
+            "description": "Accès gratuit : consulter et soutenir les référendums, proposer des initiatives, échanger avec les citoyens (200 caractères)"
+          },
+          {
+            "@type": "Offer",
+            "name": "Citoyen Premium",
+            "price": "3.00",
+            "priceCurrency": "EUR",
+            "billingDuration": "P1M",
+            "description": "Posts jusqu'à 500 caractères, modification des posts, badge vérifié"
+          },
+          {
+            "@type": "Offer",
+            "name": "Ambassadeur",
+            "price": "7.00",
+            "priceCurrency": "EUR",
+            "billingDuration": "P1M",
+            "description": "Publication d'articles sur le blog, posts jusqu'à 2500 caractères, profil personnalisé"
+          }
+        ],
         "featureList": [
           "Proposer des référendums citoyens",
           "Soutenir anonymement les initiatives",
