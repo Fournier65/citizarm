@@ -76,18 +76,36 @@
           {
             "@type": "Offer",
             "name": "Citoyen Premium",
-            "price": "3.00",
-            "priceCurrency": "EUR",
-            "billingDuration": "P1M",
-            "description": "Posts jusqu'à 500 caractères, modification des posts, badge vérifié"
+            "description": "Posts jusqu'à 500 caractères, modification des posts, badge vérifié",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "3.00",
+              "priceCurrency": "EUR",
+              "billingDuration": "P1M",
+              "unitCode": "MON",
+              "referenceQuantity": {
+                "@type": "QuantitativeValue",
+                "value": "1",
+                "unitCode": "MON"
+              }
+            }
           },
           {
             "@type": "Offer",
             "name": "Ambassadeur",
-            "price": "7.00",
-            "priceCurrency": "EUR",
-            "billingDuration": "P1M",
-            "description": "Publication d'articles sur le blog, posts jusqu'à 2500 caractères, profil personnalisé"
+            "description": "Publication d'articles sur le blog, posts jusqu'à 2500 caractères, profil personnalisé",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "7.00",
+              "priceCurrency": "EUR",
+              "billingDuration": "P1M",
+              "unitCode": "MON",
+              "referenceQuantity": {
+                "@type": "QuantitativeValue",
+                "value": "1",
+                "unitCode": "MON"
+              }
+            }
           }
         ],
         "featureList": [
