@@ -294,7 +294,7 @@ export default function Home() {
                 Notre Application Phare
               </span>
               <h2 className="font-display font-bold text-4xl md:text-5xl text-foreground mb-6 leading-tight">
-                AuxArmesCitoyens.fr
+                AuxArmesCitoyens.fr <span className="text-primary text-2xl md:text-3xl">(Beta)</span>
               </h2>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                 Une plateforme révolutionnaire conçue pour redonner le pouvoir d'agir aux citoyens.
