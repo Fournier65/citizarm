@@ -3,6 +3,7 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
+import { sendContactNotification } from "./resend";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -14,6 +15,14 @@ export async function registerRoutes(
     try {
       const input = api.contact.create.input.parse(req.body);
       const message = await storage.createContactMessage(input);
+      
+      await sendContactNotification({
+        name: input.name,
+        email: input.email,
+        subject: input.subject,
+        message: input.message
+      });
+      
       res.status(201).json(message);
     } catch (err) {
       if (err instanceof z.ZodError) {
