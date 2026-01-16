@@ -29,7 +29,7 @@ export async function sendContactNotification(data: {
     const result = await client.emails.send({
       from: fromEmail || 'CitiZarm <noreply@citizarm.fr>',
       to: 'contact@citizarm.fr',
-      subject: `[Contact] ${data.subject}`,
+      subject: `${data.name} - [Contact] ${data.subject}`,
       html: `
         <h2>Nouveau message de contact</h2>
         <p><strong>Nom:</strong> ${data.name}</p>
