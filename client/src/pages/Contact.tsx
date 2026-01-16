@@ -63,15 +63,17 @@ export default function Contact() {
                 </p>
 
                 <div className="space-y-6 relative z-10">
+                  {/* Téléphone masqué temporairement
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
                       <Phone size={18} className="text-primary" />
                     </div>
                     <div>
                       <p className="font-medium text-sm text-slate-400 uppercase tracking-wide">Téléphone</p>
-                      <p className="font-semibold text-lg text-white">+33 1 00 00 00 00</p>
+                      <p className="font-semibold text-lg text-white">+33 0 00 00 00 00</p>
                     </div>
                   </div>
+                  */}
 
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
