@@ -45,9 +45,11 @@ export async function sendContactNotification(data: {
   message: string;
 }) {
   try {
+    console.log('[Resend] Attempting to send contact notification...');
     const { client, fromEmail } = await getResendClient();
+    console.log('[Resend] Client obtained, fromEmail:', fromEmail);
     
-    await client.emails.send({
+    const result = await client.emails.send({
       from: fromEmail || 'CitiZarm <noreply@citizarm.fr>',
       to: 'contact@citizarm.fr',
       subject: `[Contact] ${data.subject}`,
@@ -61,9 +63,10 @@ export async function sendContactNotification(data: {
       `
     });
     
+    console.log('[Resend] Email sent successfully:', result);
     return true;
   } catch (error) {
-    console.error('Failed to send contact notification:', error);
+    console.error('[Resend] Failed to send contact notification:', error);
     return false;
   }
 }
