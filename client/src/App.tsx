@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -21,6 +22,22 @@ function Router() {
 }
 
 function App() {
+  useEffect(() => {
+    const loadingScreen = document.getElementById('loading-screen');
+    const root = document.getElementById('root');
+    
+    if (loadingScreen && root) {
+      root.classList.add('loaded');
+      setTimeout(() => {
+        loadingScreen.style.opacity = '0';
+        loadingScreen.style.transition = 'opacity 0.3s ease-out';
+        setTimeout(() => {
+          loadingScreen.remove();
+        }, 300);
+      }, 100);
+    }
+  }, []);
+
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
