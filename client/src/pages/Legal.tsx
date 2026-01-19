@@ -23,9 +23,9 @@ export default function Legal() {
                 Forme juridique : SARL<br />
                 Capital social : 5 000 €<br />
                 Siège social : 84, avenue de la République, 75011 Paris, France<br />
-                RCS : [À compléter]<br />
-                SIRET : [À compléter]<br />
-                Numéro de TVA intracommunautaire : [À compléter]
+                RCS : [en création]<br />
+                SIRET : [en création]<br />
+                Numéro de TVA intracommunautaire : [en création]
               </p>
             </section>
 
