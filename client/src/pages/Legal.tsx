@@ -46,8 +46,7 @@ export default function Legal() {
               <p className="text-muted-foreground leading-relaxed">
                 Le site est hébergé par :<br />
                 <strong className="text-foreground">Replit, Inc.</strong><br />
-                548 Market St, San Francisco, CA 94104, États-Unis<br />
-                Site web : <a href="https://replit.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://replit.com</a>
+                548 Market St, San Francisco, CA 94104, États-Unis
               </p>
             </section>
 
