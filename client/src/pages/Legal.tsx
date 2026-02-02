@@ -20,8 +20,7 @@ export default function Legal() {
               <p className="text-muted-foreground leading-relaxed">
                 Le site citiZarm.fr est édité par :<br />
                 <strong className="text-foreground">CitiZarm</strong><br />
-                Forme juridique : SARL<br />
-                Capital social : 5 000 €<br />
+                Forme juridique : Association loi 1901<br />
                 Siège social : 84, avenue de la République, 75011 Paris, France<br />
                 RCS : [en création]<br />
                 SIRET : [en création]<br />
