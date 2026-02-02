@@ -33,7 +33,6 @@ export default function Legal() {
                 Directeur de la publication
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                Antoine Fournier<br />
                 Email : contact@citizarm.fr
               </p>
             </section>
