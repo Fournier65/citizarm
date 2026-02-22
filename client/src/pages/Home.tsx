@@ -1,8 +1,35 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { Link } from "wouter";
 import { ArrowRight, CheckCircle2, Shield, Users, Vote, ChevronLeft, ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+
+function LazySection({ children, className, fallbackHeight = "400px", id }: { children: React.ReactNode; className?: string; fallbackHeight?: string; id?: string }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section ref={ref} id={id} className={className}>
+      {isVisible ? children : <div style={{ minHeight: fallbackHeight }} />}
+    </section>
+  );
+}
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SectionHeading } from "@/components/SectionHeading";
@@ -195,7 +222,7 @@ function ScreenshotCarousel({ images, altPrefix, id }: { images: string[]; altPr
 // Use an abstract tech/connection background from Unsplash
 // Descriptive comment for image replacement:
 // <!-- abstract network connection blue technology background -->
-const HERO_BG = "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop";
+const HERO_BG = "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=60&w=1200&fm=webp&auto=format&fit=crop";
 
 export default function Home() {
   return (
@@ -212,7 +239,6 @@ export default function Home() {
             className="w-full h-full object-cover opacity-10 dark:opacity-5"
             loading="eager"
             decoding="async"
-            fetchPriority="low"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/50 to-background" />
         </div>
@@ -317,7 +343,7 @@ export default function Home() {
       </section>
 
       {/* PRODUCT SECTION */}
-      <section id="product" className="py-24 bg-background relative overflow-hidden">
+      <LazySection id="product" className="py-24 bg-background relative overflow-hidden" fallbackHeight="600px">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -361,10 +387,10 @@ export default function Home() {
             <ScreenshotCarousel images={screenshots} altPrefix="AuxArmesCitoyens.fr" id="aac" />
           </div>
         </div>
-      </section>
+      </LazySection>
 
       {/* CHARTE SECTION */}
-      <section className="py-24 bg-secondary relative overflow-hidden">
+      <LazySection className="py-24 bg-secondary relative overflow-hidden" fallbackHeight="600px">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <ScreenshotCarousel images={charteScreenshots} altPrefix="Charte pour la Souveraineté Populaire" id="charte" />
@@ -407,11 +433,11 @@ export default function Home() {
             </motion.div>
           </div>
         </div>
-      </section>
+      </LazySection>
 
       {/* CTA SECTION */}
       <section className="py-24 bg-primary relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 10px), repeating-linear-gradient(-45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 10px)' }}></div>
         <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
           <h2 className="font-display font-bold text-3xl md:text-5xl !text-white mb-6">
             Prêt à changer les choses ?
