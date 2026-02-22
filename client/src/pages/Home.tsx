@@ -349,7 +349,7 @@ export default function Home() {
                 La Charte pour la Souveraineté Populaire <span className="text-primary text-2xl md:text-3xl">(Beta)</span>
               </h2>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                Une Charte à l'adresse des groupes, associations, collectifs, partis politiques, journaux ou médias engagés.
+                Une Charte à l'adresse des groupes, associations, collectifs, partis politiques, journaux ou médias engagés dans la défense de la souveraineté nationale et populaire, et de la démocratie directe.
               </p>
               
               <ul className="space-y-4 mb-10">
