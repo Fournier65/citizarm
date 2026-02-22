@@ -12,9 +12,10 @@ import aacScreenshot3 from "@assets/image_1767722411166.png";
 import aacScreenshot4 from "@assets/image_1767722513225.png";
 import aacScreenshot5 from "@assets/image_1767722701881.png";
 import aacScreenshot6 from "@assets/image_1767722742410.png";
-import charteScreenshot1 from "@assets/image_1771726115372.png";
-import charteScreenshot2 from "@assets/image_1771726146780.png";
-import charteScreenshot3 from "@assets/image_1771726811579.png";
+import charteScreenshot1 from "@assets/image_1771727306289.png";
+import charteScreenshot2 from "@assets/image_1771727330619.png";
+import charteScreenshot3 from "@assets/image_1771727357455.png";
+import charteScreenshot4 from "@assets/image_1771727402341.png";
 
 const screenshots = [
   aacScreenshot1,
@@ -29,6 +30,7 @@ const charteScreenshots = [
   charteScreenshot1,
   charteScreenshot2,
   charteScreenshot3,
+  charteScreenshot4,
 ];
 
 function ScreenshotCarousel({ images, altPrefix, id }: { images: string[]; altPrefix: string; id: string }) {
