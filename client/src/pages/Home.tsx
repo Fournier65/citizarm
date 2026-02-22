@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { Link } from "wouter";
 import { ArrowRight, CheckCircle2, Shield, Users, Vote, ChevronLeft, ChevronRight } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SectionHeading } from "@/components/SectionHeading";
@@ -33,43 +34,66 @@ const charteScreenshots = [
   charteScreenshot4,
 ];
 
+function useImagePreloader(images: string[]) {
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const [allLoaded, setAllLoaded] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    const loaded = new Set<string>();
+
+    images.forEach((src) => {
+      const img = new Image();
+      img.onload = () => {
+        if (!mounted) return;
+        loaded.add(src);
+        setLoadedImages(new Set(loaded));
+        if (loaded.size === images.length) {
+          setAllLoaded(true);
+        }
+      };
+      img.src = src;
+    });
+
+    return () => { mounted = false; };
+  }, [images]);
+
+  return { loadedImages, allLoaded };
+}
+
 function ScreenshotCarousel({ images, altPrefix, id }: { images: string[]; altPrefix: string; id: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
+  const { loadedImages, allLoaded } = useImagePreloader(images);
+  const isCurrentLoaded = loadedImages.has(images[currentIndex]);
 
   useEffect(() => {
-    images.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, [images]);
-
-  useEffect(() => {
+    if (!allLoaded) return;
     const timer = setInterval(() => {
       setDirection(1);
       setCurrentIndex((prev) => (prev + 1) % images.length);
     }, 7000);
     return () => clearInterval(timer);
-  }, [images.length]);
+  }, [images.length, allLoaded]);
 
-  const goToPrevious = () => {
+  const goToPrevious = useCallback(() => {
     setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
-  };
+  }, [images.length]);
 
-  const goToNext = () => {
+  const goToNext = useCallback(() => {
     setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % images.length);
-  };
+  }, [images.length]);
 
-  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDragEnd = useCallback((_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const threshold = 50;
     if (info.offset.x < -threshold) {
       goToNext();
     } else if (info.offset.x > threshold) {
       goToPrevious();
     }
-  };
+  }, [goToNext, goToPrevious]);
 
   const slideVariants = {
     enter: (dir: number) => ({
@@ -103,6 +127,11 @@ function ScreenshotCarousel({ images, altPrefix, id }: { images: string[]; altPr
         </div>
         
         <div className="relative aspect-[16/10] overflow-hidden touch-pan-y">
+          {!isCurrentLoaded && (
+            <div className="absolute inset-0 z-10">
+              <Skeleton className="w-full h-full rounded-none" />
+            </div>
+          )}
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
             <motion.img
               key={currentIndex}
@@ -119,6 +148,7 @@ function ScreenshotCarousel({ images, altPrefix, id }: { images: string[]; altPr
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.2}
               onDragEnd={handleDragEnd}
+              loading="lazy"
             />
           </AnimatePresence>
         </div>
@@ -180,6 +210,9 @@ export default function Home() {
             src={HERO_BG} 
             alt="Background" 
             className="w-full h-full object-cover opacity-10 dark:opacity-5"
+            loading="eager"
+            decoding="async"
+            fetchPriority="low"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/50 to-background" />
         </div>
