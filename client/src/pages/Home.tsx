@@ -12,6 +12,9 @@ import aacScreenshot3 from "@assets/image_1767722411166.png";
 import aacScreenshot4 from "@assets/image_1767722513225.png";
 import aacScreenshot5 from "@assets/image_1767722701881.png";
 import aacScreenshot6 from "@assets/image_1767722742410.png";
+import charteScreenshot1 from "@assets/image_1771726115372.png";
+import charteScreenshot2 from "@assets/image_1771726146780.png";
+import charteScreenshot3 from "@assets/image_1771726811579.png";
 
 const screenshots = [
   aacScreenshot1,
@@ -22,34 +25,39 @@ const screenshots = [
   aacScreenshot5,
 ];
 
-function ScreenshotCarousel() {
+const charteScreenshots = [
+  charteScreenshot1,
+  charteScreenshot2,
+  charteScreenshot3,
+];
+
+function ScreenshotCarousel({ images, altPrefix, id }: { images: string[]; altPrefix: string; id: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
 
-  // Preload all carousel images on mount for smoother transitions
   useEffect(() => {
-    screenshots.forEach((src) => {
+    images.forEach((src) => {
       const img = new Image();
       img.src = src;
     });
-  }, []);
+  }, [images]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setDirection(1);
-      setCurrentIndex((prev) => (prev + 1) % screenshots.length);
+      setCurrentIndex((prev) => (prev + 1) % images.length);
     }, 7000);
     return () => clearInterval(timer);
-  }, []);
+  }, [images.length]);
 
   const goToPrevious = () => {
     setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + screenshots.length) % screenshots.length);
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
   const goToNext = () => {
     setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % screenshots.length);
+    setCurrentIndex((prev) => (prev + 1) % images.length);
   };
 
   const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
@@ -85,7 +93,6 @@ function ScreenshotCarousel() {
       className="relative"
     >
       <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border border-border bg-background">
-        {/* Browser Chrome */}
         <div className="bg-secondary border-b border-border p-4 flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-red-400" />
           <div className="w-3 h-3 rounded-full bg-amber-400" />
@@ -93,15 +100,12 @@ function ScreenshotCarousel() {
           <div className="ml-4 flex-1 bg-background h-8 rounded-md border border-border" />
         </div>
         
-        {/* Screenshot with slide transition and swipe support */}
-        <div 
-          className="relative aspect-[16/10] overflow-hidden touch-pan-y"
-        >
+        <div className="relative aspect-[16/10] overflow-hidden touch-pan-y">
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
             <motion.img
               key={currentIndex}
-              src={screenshots[currentIndex]}
-              alt={`AuxArmesCitoyens.fr - Capture ${currentIndex + 1}`}
+              src={images[currentIndex]}
+              alt={`${altPrefix} - Capture ${currentIndex + 1}`}
               custom={direction}
               variants={slideVariants}
               initial="enter"
@@ -117,26 +121,24 @@ function ScreenshotCarousel() {
           </AnimatePresence>
         </div>
 
-        {/* Navigation arrows - hidden on mobile */}
         <button
           onClick={goToPrevious}
           className="absolute left-3 top-1/2 translate-y-2 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border hidden md:flex items-center justify-center text-foreground hover:bg-background transition-colors"
-          data-testid="button-carousel-prev"
+          data-testid={`button-${id}-carousel-prev`}
         >
           <ChevronLeft size={20} />
         </button>
         <button
           onClick={goToNext}
           className="absolute right-3 top-1/2 translate-y-2 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border hidden md:flex items-center justify-center text-foreground hover:bg-background transition-colors"
-          data-testid="button-carousel-next"
+          data-testid={`button-${id}-carousel-next`}
         >
           <ChevronRight size={20} />
         </button>
       </div>
 
-      {/* Dots indicator */}
       <div className="flex justify-center gap-2 mt-4">
-        {screenshots.map((_, index) => (
+        {images.map((_, index) => (
           <button
             key={index}
             onClick={() => {
@@ -148,12 +150,11 @@ function ScreenshotCarousel() {
                 ? "bg-primary w-6" 
                 : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
             }`}
-            data-testid={`button-carousel-dot-${index}`}
+            data-testid={`button-${id}-carousel-dot-${index}`}
           />
         ))}
       </div>
       
-      {/* Decor element */}
       <div className="absolute -z-10 top-10 -right-10 w-full h-full bg-primary/10 rounded-3xl" />
     </motion.div>
   );
@@ -322,7 +323,53 @@ export default function Home() {
               </a>
             </motion.div>
 
-            <ScreenshotCarousel />
+            <ScreenshotCarousel images={screenshots} altPrefix="AuxArmesCitoyens.fr" id="aac" />
+          </div>
+        </div>
+      </section>
+
+      {/* CHARTE SECTION */}
+      <section className="py-24 bg-secondary relative overflow-hidden">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <ScreenshotCarousel images={charteScreenshots} altPrefix="Charte pour la Souveraineté Populaire" id="charte" />
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className="text-blue-500 font-bold tracking-wider uppercase text-sm mb-2 block">
+                Nouveau
+              </span>
+              <h2 className="font-display font-bold text-4xl md:text-5xl text-foreground mb-6 leading-tight">
+                La Charte pour la Souveraineté Populaire <span className="text-primary text-2xl md:text-3xl">(Beta)</span>
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                Une Charte à l'adresse des groupes, associations, collectifs, partis politiques, journaux ou médias engagés.
+              </p>
+              
+              <ul className="space-y-4 mb-10">
+                {[
+                  "10 articles d'engagement souverains",
+                  "Amendements et vote",
+                  "Des pages dédiées pour les signataires",
+                  "Partage d'information"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-foreground font-medium">
+                    <CheckCircle2 className="text-green-500 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              <a href="https://charte-souverainete-populaire.fr" target="_blank" rel="noopener noreferrer">
+                <button className="px-8 py-4 rounded-xl bg-foreground text-background font-semibold hover:bg-primary hover:text-primary-foreground transition-colors duration-300 flex items-center gap-2" data-testid="button-visit-charte">
+                  Visiter la Charte <ArrowRight size={18} />
+                </button>
+              </a>
+            </motion.div>
           </div>
         </div>
       </section>
