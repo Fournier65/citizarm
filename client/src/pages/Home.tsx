@@ -352,8 +352,8 @@ export default function Home() {
               
               <ul className="space-y-4 mb-10">
                 {[
-                  "10 articles d'engagement souverains",
-                  "Amendements et vote",
+                  "10 articles d'engagements souverains",
+                  "Amendements et votes",
                   "Des pages dédiées pour les signataires",
                   "Partage d'information"
                 ].map((item, i) => (
