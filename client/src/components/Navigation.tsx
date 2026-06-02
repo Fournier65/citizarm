@@ -58,7 +58,7 @@ export function Navigation() {
                 citiZarm
               </span>
               <span className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider font-medium">
-                Armer les esprits citoyens
+                Armer les esprits
               </span>
             </div>
           </Link>
