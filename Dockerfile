@@ -13,12 +13,9 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --omit=dev && npm install drizzle-kit drizzle-orm pg
+RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/shared ./shared
-COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
-COPY --from=builder /app/migrations ./migrations
 
 COPY entrypoint.sh ./entrypoint.sh
 RUN chmod +x entrypoint.sh
