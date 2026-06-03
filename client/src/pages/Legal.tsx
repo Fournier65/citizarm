@@ -43,8 +43,8 @@ export default function Legal() {
               </h2>
               <p className="text-muted-foreground leading-relaxed">
                 Le site est hébergé par :<br />
-                <strong className="text-foreground">Replit, Inc.</strong><br />
-                548 Market St, San Francisco, CA 94104, États-Unis
+                <strong className="text-foreground">OVH Cloud</strong><br />
+                2 rue Kellermann - 59100 Roubaix - France
               </p>
             </section>
 
