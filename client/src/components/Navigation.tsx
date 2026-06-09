@@ -128,13 +128,13 @@ export function Navigation() {
                 Accueil
               </Link>
               <button 
-                onClick={() => { setIsOpen(false); goToSection("about"); }} 
+                onClick={() => { setIsOpen(false); setTimeout(() => goToSection("about"), 300); }} 
                 className="text-lg font-medium text-muted-foreground py-2 border-b border-border cursor-pointer text-left bg-transparent border-none w-full"
               >
                 À propos
               </button>
               <button 
-                onClick={() => { setIsOpen(false); goToSection("product"); }} 
+                onClick={() => { setIsOpen(false); setTimeout(() => goToSection("product"), 300); }} 
                 className="text-lg font-medium text-muted-foreground py-2 border-b border-border cursor-pointer text-left bg-transparent border-none w-full"
               >
                 Nos solutions
