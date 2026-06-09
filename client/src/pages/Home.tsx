@@ -393,8 +393,6 @@ export default function Home() {
       <LazySection className="py-24 bg-secondary relative overflow-hidden" fallbackHeight="600px">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <ScreenshotCarousel images={charteScreenshots} altPrefix="Charte pour la Souveraineté Populaire" id="charte" />
-
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -431,6 +429,10 @@ export default function Home() {
                 </button>
               </a>
             </motion.div>
+
+            <div className="lg:order-first">
+              <ScreenshotCarousel images={charteScreenshots} altPrefix="Charte pour la Souveraineté Populaire" id="charte" />
+            </div>
           </div>
         </div>
       </LazySection>
