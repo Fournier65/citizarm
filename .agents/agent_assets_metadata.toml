@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "yJk1CT0be-Sk4wIyCRpDI"
+uri = "file://DEPLOY-OVH.md"
+type = "text"
+title = "Guide de déploiement Replit → GitHub + OVH"
