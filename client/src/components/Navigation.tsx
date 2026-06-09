@@ -83,7 +83,7 @@ export function Navigation() {
               onClick={() => goToSection("product")}
               className="text-sm font-medium transition-colors hover:text-primary relative group text-muted-foreground cursor-pointer bg-transparent border-none"
             >
-              Notre Solution
+              Nos solutions
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
             </button>
             <Link href="/contact" onClick={() => window.scrollTo(0, 0)} className={cn(
@@ -137,7 +137,7 @@ export function Navigation() {
                 onClick={() => { setIsOpen(false); goToSection("product"); }} 
                 className="text-lg font-medium text-muted-foreground py-2 border-b border-border cursor-pointer text-left bg-transparent border-none w-full"
               >
-                Notre Solution
+                Nos solutions
               </button>
               <Link href="/contact" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }} className="text-lg font-medium text-muted-foreground py-2 border-b border-border">
                 Contact

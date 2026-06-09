@@ -81,7 +81,7 @@ export function Footer() {
                   onClick={() => goToSection("product")}
                   className="text-slate-400 hover:text-primary transition-colors cursor-pointer bg-transparent border-none p-0"
                 >
-                  Notre Solution
+                  Nos solutions
                 </button>
               </li>
               <li>
