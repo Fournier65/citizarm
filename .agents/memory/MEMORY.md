@@ -1,0 +1,1 @@
+- [Pruning unused shadcn/ui components](shadcn-unused-component-pruning.md) — check full import chains before deleting, some "unused" components are actually depended on by other unused components.
