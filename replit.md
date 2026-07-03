@@ -8,6 +8,8 @@ CitiZarm is a French civic technology platform designed to strengthen direct dem
 
 Preferred communication style: Simple, everyday language.
 
+**IMPORTANT — Git/GitHub:** Never push commits to GitHub (`git push`) without the user's explicit request each time. Local checkpoints/commits happen automatically, but pushing to the `origin` remote (which triggers the GitHub Actions auto-deploy to the OVH server) must only happen when the user explicitly asks for it in that moment.
+
 ## System Architecture
 
 ### Frontend Architecture
