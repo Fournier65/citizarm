@@ -1,1 +1,2 @@
 - [Pruning unused shadcn/ui components](shadcn-unused-component-pruning.md) — check full import chains before deleting, some "unused" components are actually depended on by other unused components.
+- [Replit npm registry breaks external deploy](replit-npm-registry-breaks-external-deploy.md) — package-lock.json can capture Replit's internal proxy URL, breaking builds on self-hosted CI/CD servers.
