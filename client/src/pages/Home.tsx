@@ -33,17 +33,17 @@ function LazySection({ children, className, fallbackHeight = "400px", id }: { ch
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SectionHeading } from "@/components/SectionHeading";
-import logo from "@assets/IMG_7582_1767640004029.jpeg";
-import aacScreenshot1 from "@assets/image_1767721768477.png";
-import aacScreenshot2 from "@assets/image_1767722378330.png";
-import aacScreenshot3 from "@assets/image_1767722411166.png";
-import aacScreenshot4 from "@assets/image_1767722513225.png";
-import aacScreenshot5 from "@assets/image_1767722701881.png";
-import aacScreenshot6 from "@assets/image_1767722742410.png";
-import charteScreenshot1 from "@assets/image_1771727306289.png";
-import charteScreenshot2 from "@assets/image_1771727330619.png";
-import charteScreenshot3 from "@assets/image_1771727357455.png";
-import charteScreenshot4 from "@assets/image_1771727402341.png";
+import logo from "@assets/IMG_7582_1767640004029.webp";
+import aacScreenshot1 from "@assets/image_1767721768477.webp";
+import aacScreenshot2 from "@assets/image_1767722378330.webp";
+import aacScreenshot3 from "@assets/image_1767722411166.webp";
+import aacScreenshot4 from "@assets/image_1767722513225.webp";
+import aacScreenshot5 from "@assets/image_1767722701881.webp";
+import aacScreenshot6 from "@assets/image_1767722742410.webp";
+import charteScreenshot1 from "@assets/image_1771727306289.webp";
+import charteScreenshot2 from "@assets/image_1771727330619.webp";
+import charteScreenshot3 from "@assets/image_1771727357455.webp";
+import charteScreenshot4 from "@assets/image_1771727402341.webp";
 
 const screenshots = [
   aacScreenshot1,
