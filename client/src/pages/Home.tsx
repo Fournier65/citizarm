@@ -33,7 +33,8 @@ function LazySection({ children, className, fallbackHeight = "400px", id }: { ch
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SectionHeading } from "@/components/SectionHeading";
-import logo from "@assets/IMG_7582_1767640004029.webp";
+import logo160 from "@assets/IMG_7582_1767640004029-160.webp";
+import logo256 from "@assets/IMG_7582_1767640004029-256.webp";
 import aacScreenshot1 from "@assets/image_1767721768477.webp";
 import aacScreenshot2 from "@assets/image_1767722378330.webp";
 import aacScreenshot3 from "@assets/image_1767722411166.webp";
@@ -222,7 +223,7 @@ function ScreenshotCarousel({ images, altPrefix, id }: { images: string[]; altPr
 // Use an abstract tech/connection background from Unsplash
 // Descriptive comment for image replacement:
 // <!-- abstract network connection blue technology background -->
-const HERO_BG = "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=60&w=1200&fm=webp&auto=format&fit=crop";
+const HERO_BG = "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=35&w=1200&fm=webp&auto=format&fit=crop";
 
 export default function Home() {
   return (
@@ -254,7 +255,13 @@ export default function Home() {
               className="mb-8 flex justify-center"
             >
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl shadow-xl overflow-hidden border-4 border-background bg-background">
-                <img src={logo} alt="citiZarm Logo" className="w-full h-full object-cover" />
+                <img
+                  src={logo256}
+                  srcSet={`${logo160} 160w, ${logo256} 256w`}
+                  sizes="(min-width: 768px) 128px, 96px"
+                  alt="citiZarm Logo"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </motion.div>
             

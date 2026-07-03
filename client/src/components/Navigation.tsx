@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logo from "@assets/IMG_7582_1767640004029.webp";
+import logo from "@assets/IMG_7582_1767640004029-96.webp";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function Navigation() {

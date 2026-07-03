@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { ArrowRight, Mail, MapPin } from "lucide-react";
 import { SiX } from "react-icons/si";
 import { useSubscribeNewsletter } from "@/hooks/use-contact";
-import logo from "@assets/IMG_7582_1767640004029.webp";
+import logo from "@assets/IMG_7582_1767640004029-96.webp";
 
 export function Footer() {
   const [email, setEmail] = useState("");
