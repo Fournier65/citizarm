@@ -35,6 +35,7 @@ import { Footer } from "@/components/Footer";
 import { SectionHeading } from "@/components/SectionHeading";
 import logo160 from "@assets/IMG_7582_1767640004029-160.webp";
 import logo256 from "@assets/IMG_7582_1767640004029-256.webp";
+import heroBg from "@assets/hero-background.webp";
 import aacScreenshot1 from "@assets/image_1767721768477.webp";
 import aacScreenshot2 from "@assets/image_1767722378330.webp";
 import aacScreenshot3 from "@assets/image_1767722411166.webp";
@@ -220,10 +221,8 @@ function ScreenshotCarousel({ images, altPrefix, id }: { images: string[]; altPr
   );
 }
 
-// Use an abstract tech/connection background from Unsplash
-// Descriptive comment for image replacement:
-// <!-- abstract network connection blue technology background -->
-const HERO_BG = "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=35&w=1200&fm=webp&auto=format&fit=crop";
+// Abstract tech/connection background image, self-hosted (was previously loaded from Unsplash)
+const HERO_BG = heroBg;
 
 export default function Home() {
   return (
