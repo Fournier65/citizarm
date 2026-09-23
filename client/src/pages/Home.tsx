@@ -37,73 +37,56 @@ import logo160 from "@assets/IMG_7582_1767640004029-160.webp";
 import logo256 from "@assets/IMG_7582_1767640004029-256.webp";
 import heroBg from "@assets/hero-background.webp";
 import aacScreenshot1 from "@assets/image_1767721768477.webp";
+import aacScreenshot1Small from "@assets/image_1767721768477-720.webp";
 import aacScreenshot2 from "@assets/image_1767722378330.webp";
+import aacScreenshot2Small from "@assets/image_1767722378330-720.webp";
 import aacScreenshot3 from "@assets/image_1767722411166.webp";
+import aacScreenshot3Small from "@assets/image_1767722411166-720.webp";
 import aacScreenshot4 from "@assets/image_1767722513225.webp";
+import aacScreenshot4Small from "@assets/image_1767722513225-720.webp";
 import aacScreenshot5 from "@assets/image_1767722701881.webp";
+import aacScreenshot5Small from "@assets/image_1767722701881-720.webp";
 import aacScreenshot6 from "@assets/image_1767722742410.webp";
+import aacScreenshot6Small from "@assets/image_1767722742410-720.webp";
 import charteScreenshot1 from "@assets/image_1771727306289.webp";
+import charteScreenshot1Small from "@assets/image_1771727306289-720.webp";
 import charteScreenshot2 from "@assets/image_1771727330619.webp";
+import charteScreenshot2Small from "@assets/image_1771727330619-720.webp";
 import charteScreenshot3 from "@assets/image_1771727357455.webp";
+import charteScreenshot3Small from "@assets/image_1771727357455-720.webp";
 import charteScreenshot4 from "@assets/image_1771727402341.webp";
+import charteScreenshot4Small from "@assets/image_1771727402341-720.webp";
 
 const screenshots = [
-  aacScreenshot1,
-  aacScreenshot2,
-  aacScreenshot6,
-  aacScreenshot3,
-  aacScreenshot4,
-  aacScreenshot5,
+  { src: aacScreenshot1, small: aacScreenshot1Small },
+  { src: aacScreenshot2, small: aacScreenshot2Small },
+  { src: aacScreenshot6, small: aacScreenshot6Small },
+  { src: aacScreenshot3, small: aacScreenshot3Small },
+  { src: aacScreenshot4, small: aacScreenshot4Small },
+  { src: aacScreenshot5, small: aacScreenshot5Small },
 ];
 
 const charteScreenshots = [
-  charteScreenshot1,
-  charteScreenshot2,
-  charteScreenshot3,
-  charteScreenshot4,
+  { src: charteScreenshot1, small: charteScreenshot1Small },
+  { src: charteScreenshot2, small: charteScreenshot2Small },
+  { src: charteScreenshot3, small: charteScreenshot3Small },
+  { src: charteScreenshot4, small: charteScreenshot4Small },
 ];
 
-function useImagePreloader(images: string[]) {
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
-  const [allLoaded, setAllLoaded] = useState(false);
-
-  useEffect(() => {
-    let mounted = true;
-    const loaded = new Set<string>();
-
-    images.forEach((src) => {
-      const img = new Image();
-      img.onload = () => {
-        if (!mounted) return;
-        loaded.add(src);
-        setLoadedImages(new Set(loaded));
-        if (loaded.size === images.length) {
-          setAllLoaded(true);
-        }
-      };
-      img.src = src;
-    });
-
-    return () => { mounted = false; };
-  }, [images]);
-
-  return { loadedImages, allLoaded };
-}
-
-function ScreenshotCarousel({ images, altPrefix, id }: { images: string[]; altPrefix: string; id: string }) {
+function ScreenshotCarousel({ images, altPrefix, id }: { images: { src: string; small: string }[]; altPrefix: string; id: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
-  const { loadedImages, allLoaded } = useImagePreloader(images);
-  const isCurrentLoaded = loadedImages.has(images[currentIndex]);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const currentImage = images[currentIndex];
+  const isCurrentLoaded = loadedImages.has(currentImage.src);
 
   useEffect(() => {
-    if (!allLoaded) return;
     const timer = setInterval(() => {
       setDirection(1);
       setCurrentIndex((prev) => (prev + 1) % images.length);
     }, 7000);
     return () => clearInterval(timer);
-  }, [images.length, allLoaded]);
+  }, [images.length]);
 
   const goToPrevious = useCallback(() => {
     setDirection(-1);
@@ -164,7 +147,9 @@ function ScreenshotCarousel({ images, altPrefix, id }: { images: string[]; altPr
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
             <motion.img
               key={currentIndex}
-              src={images[currentIndex]}
+              src={currentImage.src}
+              srcSet={`${currentImage.small} 720w, ${currentImage.src} 960w`}
+              sizes="(min-width: 1024px) 600px, calc(100vw - 32px)"
               alt={`${altPrefix} - Capture ${currentIndex + 1}`}
               custom={direction}
               variants={slideVariants}
@@ -177,6 +162,7 @@ function ScreenshotCarousel({ images, altPrefix, id }: { images: string[]; altPr
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.2}
               onDragEnd={handleDragEnd}
+              onLoad={() => setLoadedImages((previous) => new Set(previous).add(currentImage.src))}
               loading="lazy"
             />
           </AnimatePresence>
