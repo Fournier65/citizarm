@@ -8,3 +8,7 @@ test-results/
 *.tar.gz
 .env
 *.dump
+# Captures de test locales, sans usage dans le site
+attached_assets/image_1790200161997.png
+attached_assets/image_1790205035145.png
+attached_assets/image_1790205511820.png
