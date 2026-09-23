@@ -57,8 +57,8 @@ test("the homepage only fetches selected carousel slides and chooses responsive 
     await loadedSlide(page.getByRole("img", { name: `${prefix} - Capture 1` }), variant);
   }
 
-  // The new case displays all four uploaded screenshots in order.
-  for (const index of [2, 3]) {
+  // The new case displays all six uploaded screenshots in order.
+  for (const index of [2, 3, 4, 5]) {
     await page.getByTestId(`button-revodemo-carousel-dot-${index}`).click();
     await loadedSlide(page.getByRole("img", { name: `Révodémo - Capture ${index + 1}` }), variant);
   }

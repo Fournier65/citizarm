@@ -64,6 +64,10 @@ import revodemoScreenshot3 from "@assets/image_1790198427724.webp";
 import revodemoScreenshot3Small from "@assets/image_1790198427724-720.webp";
 import revodemoScreenshot4 from "@assets/image_1790198488147.webp";
 import revodemoScreenshot4Small from "@assets/image_1790198488147-720.webp";
+import revodemoScreenshot5 from "@assets/image_1790198764015.webp";
+import revodemoScreenshot5Small from "@assets/image_1790198764015-720.webp";
+import revodemoScreenshot6 from "@assets/image_1790198858300.webp";
+import revodemoScreenshot6Small from "@assets/image_1790198858300-720.webp";
 
 const screenshots = [
   { src: aacScreenshot1, small: aacScreenshot1Small },
@@ -86,6 +90,8 @@ const revodemoScreenshots = [
   { src: revodemoScreenshot2, small: revodemoScreenshot2Small },
   { src: revodemoScreenshot3, small: revodemoScreenshot3Small },
   { src: revodemoScreenshot4, small: revodemoScreenshot4Small },
+  { src: revodemoScreenshot5, small: revodemoScreenshot5Small },
+  { src: revodemoScreenshot6, small: revodemoScreenshot6Small },
 ];
 
 function ScreenshotCarousel({ images, altPrefix, id }: { images: { src: string; small: string }[]; altPrefix: string; id: string }) {
