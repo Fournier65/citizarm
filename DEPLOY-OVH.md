@@ -275,6 +275,38 @@ docker logs nomapp-app-1
 
 Tester : `https://mondomaine.fr`
 
+### Vérifier l'envoi des emails en production
+
+La clé Resend configurée dans Replit n'est **pas** transférée au serveur OVH ou à GitHub Actions.
+Dans `/home/ubuntu/citizarm/.env` sur le serveur, définir `RESEND_API_KEY` avec une
+clé valide depuis Resend (ne jamais la publier dans GitHub ni la coller dans un ticket).
+Le fichier `.env` reste sur le serveur ; le déploiement GitHub utilise
+`docker compose --env-file .env` pour transmettre la variable au conteneur.
+
+Vérifier uniquement sa présence dans le conteneur, sans afficher sa valeur :
+
+```bash
+cd /home/ubuntu/citizarm
+docker compose --env-file .env exec app sh -c 'if [ -n "$RESEND_API_KEY" ]; then echo "RESEND_API_KEY présente"; else echo "RESEND_API_KEY absente"; fi'
+```
+
+Après toute correction de `.env`, recréer le conteneur pour appliquer la variable :
+
+```bash
+docker compose --env-file .env up -d --force-recreate app
+```
+
+Après un essai via le formulaire de contact, examiner les seules lignes Resend :
+
+```bash
+docker compose --env-file .env logs --tail=100 app | grep '\[Resend\]'
+```
+
+Si la clé est présente mais que l'envoi échoue, vérifier le message d'erreur
+Resend (clé invalide, permissions, domaine expéditeur `auxarmescitoyens.fr`
+non vérifié, etc.). Le formulaire enregistre le message dans la base avant
+l'envoi : ne pas le soumettre plusieurs fois pour éviter les doublons.
+
 ---
 
 ## 10. L'IA configure le déploiement automatique (GitHub Actions)

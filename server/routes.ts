@@ -16,14 +16,14 @@ export async function registerRoutes(
       const input = api.contact.create.input.parse(req.body);
       const message = await storage.createContactMessage(input);
       
-      await sendContactNotification({
+      const notificationSent = await sendContactNotification({
         name: input.name,
         email: input.email,
         subject: input.subject,
         message: input.message
       });
       
-      res.status(201).json(message);
+      res.status(201).json({ ...message, notificationSent });
     } catch (err) {
       if (err instanceof z.ZodError) {
         return res.status(400).json({

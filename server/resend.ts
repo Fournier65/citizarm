@@ -27,7 +27,7 @@ export async function sendContactNotification(data: {
     console.log('[Resend] Client obtained, fromEmail:', fromEmail);
     
     const result = await client.emails.send({
-      from: fromEmail || 'CitiZarm <noreply@citizarm.fr>',
+      from: fromEmail,
       to: 'contact@citizarm.fr',
       subject: `${data.name} - [Contact] ${data.subject}`,
       html: `
@@ -40,7 +40,12 @@ export async function sendContactNotification(data: {
       `
     });
     
-    console.log('[Resend] Email sent successfully:', result);
+    if (result.error || !result.data?.id) {
+      console.error('[Resend] Email rejected:', result.error ?? 'Missing email ID in Resend response');
+      return false;
+    }
+
+    console.log('[Resend] Email accepted:', result.data.id);
     return true;
   } catch (error) {
     console.error('[Resend] Failed to send contact notification:', error);

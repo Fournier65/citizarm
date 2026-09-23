@@ -23,7 +23,15 @@ export function useSubmitContact() {
       }
       return api.contact.create.responses[201].parse(await res.json());
     },
-    onSuccess: () => {
+    onSuccess: ({ notificationSent }) => {
+      if (!notificationSent) {
+        toast({
+          title: "Message enregistré, notification non envoyée",
+          description: "Votre message est conservé, mais l'email n'a pas pu être transmis à notre équipe. Vous pouvez nous écrire à contact@citizarm.fr.",
+          variant: "destructive",
+        });
+        return;
+      }
       toast({
         title: "Message envoyé !",
         description: "Nous avons bien reçu votre message et nous vous répondrons dans les plus brefs délais.",

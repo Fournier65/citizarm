@@ -27,7 +27,7 @@ export const api = {
       path: '/api/contact',
       input: insertContactSchema,
       responses: {
-        201: z.custom<typeof contactMessages.$inferSelect>(),
+        201: z.object({ notificationSent: z.boolean() }).passthrough(),
         400: errorSchemas.validation,
       },
     },
