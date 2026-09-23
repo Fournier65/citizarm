@@ -55,7 +55,7 @@ EXPOSE 5000
 ENTRYPOINT ["./entrypoint.sh"]
 ```
 
-> ⚠️ Ne pas ajouter de `COPY migrations` si le dossier n'existe pas dans le projet.
+> Les opérations de base de données sont exécutées explicitement depuis le dépôt sur le serveur, pas au démarrage du conteneur.
 
 ### `entrypoint.sh`
 Lance l'application sans migration automatique (drizzle-kit push bloque en mode non-interactif) :
@@ -93,7 +93,11 @@ services:
     ports:
       - "PORT_HOTE:5000"
     environment:
-      DATABASE_URL: postgresql://nomapp:${POSTGRES_PASSWORD}@db:5432/nomapp
+      PGHOST: db
+      PGPORT: "5432"
+      PGUSER: nomapp
+      PGDATABASE: nomapp
+      PGPASSWORD: ${POSTGRES_PASSWORD}
       RESEND_API_KEY: ${RESEND_API_KEY}
       NODE_ENV: production
     depends_on:
@@ -275,6 +279,66 @@ docker logs nomapp-app-1
 
 Tester : `https://mondomaine.fr`
 
+### Initialiser la base OVH depuis la production Replit (une seule fois)
+
+`docker compose up` crée le serveur PostgreSQL et sa base, **mais pas les tables**.
+La production Replit et la base OVH sont distinctes. La commande `db:push` lancée
+sur Replit ne modifie pas OVH. Le script `ops/db/import-ovh.sh` refuse de
+continuer si l'une des deux tables existe déjà sur OVH : il ne fusionne pas
+des données et ne les efface jamais.
+
+Avant toute migration, changer tout mot de passe divulgué. Si la base OVH a déjà
+été créée avec l'ancien mot de passe, changer le mot de passe **dans PostgreSQL**
+avec `docker compose --env-file .env exec db psql -U citizarm -d citizarm`
+puis `\password citizarm` (saisie masquée), et **ensuite** mettre la même valeur
+dans `.env`. Modifier seulement `.env` ne change pas le mot de passe du rôle
+enregistré dans le volume PostgreSQL. Ne jamais faire `docker compose down -v`.
+Le conteneur `app` reçoit maintenant le mot de passe séparément via `PGPASSWORD` :
+les caractères réservés aux URL, comme `#`, ne cassent plus la connexion.
+
+1. Bloquer temporairement les nouvelles inscriptions/messages sur l'ancien site
+   pendant l'export et la bascule, pour ne pas perdre les données arrivées entre
+   l'export et la restauration. Prévoir une courte indisponibilité pour l'import.
+2. Dans le Shell **Replit**, demander dans l'outil Database > Settings l'URL de
+   connexion de **production** (pas celle de développement). Sans la partager
+   dans le chat et sans la mettre dans Git, lancer :
+
+   ```bash
+   bash ops/db/export-replit-production.sh ../citizarm-replit-prod-data.dump
+   ```
+
+   Le script demande l'URL en saisie masquée et exporte seulement les deux
+   tables métier, données incluses. Le fichier est créé hors du dépôt avec des
+   permissions privées. Il contient des adresses et des messages personnels.
+3. Transférer le fichier vers OVH par SSH (`scp`), hors du dépôt Git :
+
+   ```bash
+   scp ../citizarm-replit-prod-data.dump ubuntu@IP_SERVEUR:/home/ubuntu/
+   ```
+
+4. Après avoir mis à jour le code sur OVH **uniquement quand le déploiement est
+   autorisé**, dans `/home/ubuntu/citizarm`, lancer :
+
+   ```bash
+   bash ops/db/import-ovh.sh /home/ubuntu/citizarm-replit-prod-data.dump
+   docker compose --env-file .env up -d --build app
+   ```
+
+   Le script vérifie la cible, la présence des tables, la lisibilité de l'archive,
+   puis sauvegarde la base OVH hors du dépôt **avant** de créer les tables. Il
+   restaure uniquement les deux tables, ajuste leurs séquences et affiche les
+   nombres de lignes. Si une étape échoue, s'arrêter et examiner l'erreur ; ne
+   pas relancer aveuglément ni supprimer le volume.
+5. Comparer les nombres de lignes avec ceux de la production Replit à l'heure
+   de l'export, puis tester une seule inscription et un seul envoi de contact.
+   L'enregistrement en base et l'envoi via Resend sont deux vérifications
+   distinctes.
+
+Ce transfert est **ponctuel**, pas une synchronisation continue. Ne jamais
+ajouter `db:push`, `pg_restore` ou une création de tables à `entrypoint.sh`
+ou à chaque déploiement automatique. Les changements ultérieurs de schéma
+doivent être préparés et appliqués en migrations distinctes, après sauvegarde.
+
 ### Vérifier l'envoi des emails en production
 
 La clé Resend configurée dans Replit n'est **pas** transférée au serveur OVH ou à GitHub Actions.
@@ -416,7 +480,7 @@ docker compose --env-file .env up -d --build
 
 | Problème | Cause | Solution |
 |----------|-------|----------|
-| `migrations: not found` | Dossier migrations absent | Retirer la ligne `COPY migrations` du Dockerfile |
+| Tables absentes sur OVH | `docker compose up` ne crée pas le schéma applicatif | Appliquer la procédure d'initialisation ci-dessus, une seule fois |
 | Container en restart loop | `drizzle-kit push` bloque en non-interactif | `entrypoint.sh` ne doit PAS lancer drizzle-kit |
 | `git pull` ne met pas à jour | Modifications locales sur le serveur | `git reset --hard origin/main && git pull` |
 | Site non mis à jour après push | Cache Docker | `docker compose build --no-cache && docker compose up -d` |

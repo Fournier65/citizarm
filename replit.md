@@ -29,7 +29,7 @@ Preferred communication style: Simple, everyday language.
 ### Data Storage
 - **Database**: PostgreSQL via Drizzle ORM
 - **Schema Location**: `shared/schema.ts` defines tables for contact messages and newsletter subscribers
-- **Migrations**: Drizzle Kit manages schema migrations in `./migrations`
+- **Schema deployment**: Replit development uses `db:push`; OVH initializes its external PostgreSQL explicitly using `ops/db/` (never at application startup).
 
 ### Project Structure
 ```
@@ -58,7 +58,7 @@ Preferred communication style: Simple, everyday language.
 ## External Dependencies
 
 ### Database
-- PostgreSQL (required via `DATABASE_URL` environment variable)
+- PostgreSQL (Replit uses `DATABASE_URL`; OVH passes separate `PG*` variables to support special characters in its password)
 - Drizzle ORM for type-safe queries
 - `connect-pg-simple` for session storage capability
 

@@ -20,7 +20,11 @@ services:
     ports:
       - "5000:5000"
     environment:
-      DATABASE_URL: postgresql://citizarm:${POSTGRES_PASSWORD}@db:5432/citizarm
+      PGHOST: db
+      PGPORT: "5432"
+      PGUSER: citizarm
+      PGDATABASE: citizarm
+      PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       RESEND_API_KEY: ${RESEND_API_KEY}
       NODE_ENV: production
     depends_on:
