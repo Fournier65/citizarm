@@ -31,6 +31,7 @@ test("the homepage only fetches selected carousel slides and chooses responsive 
   const charteFirst = await loadedSlide(page.getByRole("img", { name: "Charte pour la Souveraineté Populaire - Capture 1" }), variant);
   await page.locator("#product + section + section").scrollIntoViewIfNeeded();
   const revodemoFirst = await loadedSlide(page.getByRole("img", { name: "Révodémo - Capture 1" }), variant);
+  expect(revodemoFirst).toContain("image_1790199115795");
   await expect(page.getByRole("link", { name: "Visiter Révodémo" })).toHaveAttribute("href", "https://revodemo.fr/");
   await page.waitForTimeout(500);
   expect(requested.length, "only the selected slide of each carousel should be fetched").toBe(3);
@@ -48,7 +49,8 @@ test("the homepage only fetches selected carousel slides and chooses responsive 
     } else {
       await page.getByTestId(`button-${id}-carousel-dot-1`).click();
     }
-    await loadedSlide(second, variant);
+    const secondSrc = await loadedSlide(second, variant);
+    if (id === "revodemo") expect(secondSrc).toContain("image_1790199142046");
     if (testInfo.project.name === "desktop") {
       await page.getByTestId(`button-${id}-carousel-prev`).click();
     } else {
@@ -57,9 +59,15 @@ test("the homepage only fetches selected carousel slides and chooses responsive 
     await loadedSlide(page.getByRole("img", { name: `${prefix} - Capture 1` }), variant);
   }
 
-  // The new case displays all six uploaded screenshots in order.
-  for (const index of [2, 3, 4, 5]) {
+  // The first four slides use the replacement captures; the last two remain unchanged.
+  for (const [index, imageId] of [
+    [2, "1790199184539"],
+    [3, "1790199217235"],
+    [4, "1790198764015"],
+    [5, "1790198858300"],
+  ] as const) {
     await page.getByTestId(`button-revodemo-carousel-dot-${index}`).click();
-    await loadedSlide(page.getByRole("img", { name: `Révodémo - Capture ${index + 1}` }), variant);
+    const src = await loadedSlide(page.getByRole("img", { name: `Révodémo - Capture ${index + 1}` }), variant);
+    expect(src).toContain(`image_${imageId}`);
   }
 });
