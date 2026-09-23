@@ -20,5 +20,6 @@ jobs:
             set -e
             cd /home/ubuntu/citizarm
             git pull origin main
+            install -m 700 ops/db/migrate-ovh.sh /home/ubuntu/migrate-ovh.sh
             docker compose --env-file .env up -d --build
             docker image prune -f

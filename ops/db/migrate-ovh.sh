@@ -1,28 +1,32 @@
 #!/usr/bin/env bash
-# Apply one reviewed, versioned SQL migration to OVH after a verified backup.
-# Never run automatically from the app, a build, or a Git push.
+# Installed by GitHub Actions as /home/ubuntu/migrate-ovh.sh.
+# Run manually: backup, verify, apply /home/ubuntu/migration.sql, then archive it.
 set -euo pipefail
 umask 077
 
-repo="$(cd "$(dirname "$0")/../.." && pwd)"
-directory="$repo/ops/db/migrations"
+home=/home/ubuntu
+project="$home/citizarm"
+migration="$home/migration.sql"
+archive_dir="$home/citizarm-migrations"
+backup_dir="$home/citizarm-backups"
 
-if [ "$#" -ne 1 ] || [ ! -f "$1" ]; then
-  echo "Usage: bash ops/db/migrate-ovh.sh ops/db/migrations/0002_description.sql" >&2
+if [ "$#" -ne 0 ]; then
+  echo "Usage: bash /home/ubuntu/migrate-ovh.sh (no arguments)" >&2
   exit 1
 fi
-migration="$(realpath "$1")"
-name="$(basename "$migration" .sql)"
-if [[ "$migration" != "$directory/"* || ! "$name" =~ ^[0-9]{4}_[a-z0-9_]+$ ]]; then
-  echo "Only numbered .sql files inside ops/db/migrations/ are accepted" >&2
+if [ ! -f "$migration" ] || [ -L "$migration" ] || [ ! -s "$migration" ]; then
+  echo "Missing or empty regular file: $migration; nothing changed" >&2
   exit 1
 fi
 if grep -Eiq '^[[:space:]]*(BEGIN|COMMIT|ROLLBACK)([[:space:];]|$)|^[[:space:]]*\\' "$migration"; then
-  echo "Migration files must not manage transactions or contain psql commands" >&2
+  echo "Migration must not manage transactions or contain psql commands" >&2
   exit 1
 fi
-checksum="$(sha256sum "$migration" | cut -d ' ' -f 1)"
-cd "$repo"
+if [ ! -f "$project/docker-compose.yml" ]; then
+  echo "OVH project not found at $project" >&2
+  exit 1
+fi
+cd "$project"
 
 db() {
   docker compose --env-file .env exec -T db "$@"
@@ -31,43 +35,36 @@ db() {
 identity="$(db psql -X -A -t -v ON_ERROR_STOP=1 -U citizarm -d citizarm -c \
   "SELECT current_database() || '/' || current_user")"
 if [ "$identity" != "citizarm/citizarm" ]; then
-  echo "Refusing to modify unexpected database/user: $identity" >&2
+  echo "Unexpected database/user: $identity; nothing changed" >&2
   exit 1
 fi
 
+checksum="$(sha256sum "$migration" | cut -d ' ' -f 1)"
 tracking_exists="$(db psql -X -A -t -v ON_ERROR_STOP=1 -U citizarm -d citizarm -c \
   "SELECT to_regclass('public.schema_migrations') IS NOT NULL")"
 if [ "$tracking_exists" = "t" ]; then
   previous="$(db psql -X -A -t -v ON_ERROR_STOP=1 -U citizarm -d citizarm -c \
-    "SELECT sha256 FROM public.schema_migrations WHERE name = '$name'")"
+    "SELECT name FROM public.schema_migrations WHERE sha256 = '$checksum' LIMIT 1")"
   if [ -n "$previous" ]; then
-    if [ "$previous" != "$checksum" ]; then
-      echo "Migration $name was already applied with different contents; refusing" >&2
-      exit 1
-    fi
-    echo "Migration $name already applied; nothing changed."
-    exit 0
+    echo "This SQL was already applied as $previous; nothing changed" >&2
+    exit 1
   fi
 elif [ "$tracking_exists" != "f" ]; then
-  echo "Cannot verify migration history; refusing" >&2
+  echo "Cannot verify migration history; nothing changed" >&2
   exit 1
 fi
 
-last_number=1  # 0001 was the initial, one-time import.
-if [ "$tracking_exists" = "t" ]; then
-  last_number="$(db psql -X -A -t -v ON_ERROR_STOP=1 -U citizarm -d citizarm -c \
-    "SELECT COALESCE(MAX(left(name, 4)::integer), 1) FROM public.schema_migrations")"
-fi
-expected=$((last_number + 1))
-if [ "$((10#${name:0:4}))" -ne "$expected" ]; then
-  printf 'Expected migration %04d after the last applied migration; refusing %s\n' "$expected" "$name" >&2
+mkdir -p "$archive_dir" "$backup_dir"
+chmod 700 "$archive_dir" "$backup_dir"
+chmod 600 "$migration"
+name="migration_$(date -u +%Y%m%dT%H%M%S%NZ)_${checksum:0:12}"
+archive="$archive_dir/$name.sql"
+if [ -e "$archive" ]; then
+  echo "Archive name collision; nothing changed" >&2
   exit 1
 fi
 
-backup_dir="$repo/../citizarm-backups"
-mkdir -p "$backup_dir"
-chmod 700 "$backup_dir"
-backup="$(mktemp "$backup_dir/${name}_$(date -u +%Y%m%dT%H%M%SZ)_XXXXXX.dump")"
+backup="$(mktemp "$backup_dir/${name}_XXXXXX.dump")"
 if ! db pg_dump -U citizarm -d citizarm -Fc > "$backup"; then
   rm -f -- "$backup"
   echo "Backup failed; migration not started" >&2
@@ -79,8 +76,8 @@ if [ ! -s "$backup" ] || ! db pg_restore --file=/dev/null < "$backup"; then
 fi
 echo "Verified backup: $backup"
 
-# One connection and one transaction: a SQL failure rolls back both schema
-# changes and the migration-history entry. The advisory lock serializes runs.
+# A single connection and transaction keep the schema and its history together.
+# Failed SQL exits psql and rolls back; migration.sql remains in place.
 {
   cat <<'SQL'
 BEGIN;
@@ -91,10 +88,14 @@ CREATE TABLE IF NOT EXISTS public.schema_migrations (
   applied_at timestamptz NOT NULL DEFAULT now()
 );
 SQL
-  printf "DO \$\$ BEGIN IF EXISTS (SELECT 1 FROM public.schema_migrations WHERE name = '%s') THEN RAISE EXCEPTION 'Migration already applied'; END IF; END \$\$;\n" "$name"
+  printf "DO \$\$ BEGIN IF EXISTS (SELECT 1 FROM public.schema_migrations WHERE sha256 = '%s') THEN RAISE EXCEPTION 'Migration already applied'; END IF; END \$\$;\n" "$checksum"
   cat "$migration"
   printf "\nINSERT INTO public.schema_migrations (name, sha256) VALUES ('%s', '%s');\n" "$name" "$checksum"
   printf 'COMMIT;\n'
 } | db psql -X -v ON_ERROR_STOP=1 -U citizarm -d citizarm
 
-echo "Applied $name to OVH. Keep the backup and verify the feature before deploying app code."
+if ! mv -n -- "$migration" "$archive" || [ -e "$migration" ]; then
+  echo "Database migration succeeded, but archiving failed. Do not rerun; check $migration and $archive." >&2
+  exit 1
+fi
+echo "Migration applied and archived at $archive"

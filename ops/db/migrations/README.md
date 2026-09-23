@@ -1,12 +1,17 @@
 # Futures migrations OVH
 
-Ajouter ici une migration SQL par évolution de schéma, avec un nom tel que
-`0002_add_example_table.sql`, puis `0003_add_example_column.sql`.
+Le fichier SQL à publier portera toujours le même nom :
+`ops/db/migrations/migration.sql`. Lors d'une nouvelle évolution, remplacer
+son contenu, publier d'abord **uniquement ce fichier**, puis sur OVH le copier
+vers `/home/ubuntu/migration.sql` et lancer `/home/ubuntu/migrate-ovh.sh`.
+Le lanceur déplace ce fichier dans `/home/ubuntu/citizarm-migrations/` avec
+une date dans le nom après succès. Les anciennes versions restent aussi dans
+l'historique Git ; la base enregistre l'empreinte de chaque migration appliquée.
 
-Ces fichiers doivent être compatibles avec l'ancienne version du site pendant
-la transition. Ne pas inclure `BEGIN`, `COMMIT`, `ROLLBACK` ou des commandes
-`psql` : `migrate-ovh.sh` fournit une transaction et note chaque migration
-appliquée. Ne pas renommer ou modifier une migration déjà exécutée.
+Écrire du SQL compatible avec l'ancienne version du site pendant la transition.
+Ne pas inclure `BEGIN`, `COMMIT`, `ROLLBACK` ou des commandes `psql` : le lanceur
+fournit la transaction. Les opérations qui ne peuvent pas être exécutées dans
+une transaction nécessitent une procédure spécifique.
 
 La migration initiale (`ops/db/001_initial.sql`) et l'import des données Replit
 ont déjà été exécutés sur OVH. Ne pas les relancer.

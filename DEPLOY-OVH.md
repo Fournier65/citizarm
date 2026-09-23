@@ -341,9 +341,11 @@ doivent être préparés et appliqués en migrations distinctes, après sauvegar
 
 ### Futures modifications de la base OVH (avant le code du site)
 
-Le déploiement GitHub Actions ne lance **aucune** migration. Pour chaque
-nouvelle table ou colonne, créer un fichier SQL numéroté dans
-`ops/db/migrations/` et modifier `shared/schema.ts` en accord avec lui.
+Le déploiement GitHub Actions copie le lanceur dans
+`/home/ubuntu/migrate-ovh.sh`, mais ne lance **aucune** migration.
+Pour chaque nouvelle table ou colonne, créer ou mettre à jour le fichier SQL
+`ops/db/migrations/migration.sql` (toujours le même nom) et modifier
+`shared/schema.ts` en accord avec lui.
 Privilégier une modification compatible avec l'ancienne version du site
 (nouvelle table, colonne nullable ou dotée d'une valeur par défaut). Pour
 supprimer/renommer des éléments ou modifier des données existantes, prévoir
@@ -351,27 +353,30 @@ plusieurs étapes et une revue spécifique avant de toucher à la production.
 
 1. Tester la migration hors production. Pousser **d'abord la migration seule** :
    le déploiement automatique reconstruit alors l'ancien site, sans changer
-   la base. Le fichier doit être présent sur OVH avant l'étape suivante.
+   la base. Attendre que le déploiement ait transféré le fichier sur OVH.
 2. Depuis PowerShell sur le laptop, ouvrir une session SSH :
 
    ```powershell
    ssh ubuntu@ADRESSE_DU_SERVEUR
    ```
 
-   Dans le terminal OVH, lancer **le fichier voulu** :
+   Dans le terminal OVH, placer le SQL sous son nom fixe dans `/home/ubuntu`,
+   puis lancer le script installé par le déploiement :
 
    ```bash
    cd /home/ubuntu/citizarm
-   bash ops/db/migrate-ovh.sh ops/db/migrations/0002_description.sql
+   install -m 600 ops/db/migrations/migration.sql /home/ubuntu/migration.sql
+   bash /home/ubuntu/migrate-ovh.sh
    ```
 
-   Le script refuse une autre base, crée une sauvegarde privée complète hors
-   du dépôt, la vérifie, puis exécute le SQL dans une transaction et note son
-   nom et son empreinte. Une migration déjà appliquée est ignorée ; si son
-   contenu a changé, le script refuse de continuer. Si la sauvegarde ou la
-   migration échoue, **s'arrêter et examiner l'erreur**, sans publier le code
-   qui dépend du nouveau schéma. La sauvegarde se trouve dans
-   `/home/ubuntu/citizarm-backups/` et peut contenir des données personnelles.
+   Le script refuse une autre base ou un SQL déjà appliqué, crée une sauvegarde
+   privée complète, la vérifie, puis exécute le SQL dans une transaction et
+   enregistre son empreinte. **Seulement après succès**, il déplace
+   `/home/ubuntu/migration.sql` vers `/home/ubuntu/citizarm-migrations/`
+   avec la date et l'empreinte dans le nom. En cas d'échec, le SQL reste en
+   place et la sauvegarde est conservée. **S'arrêter et examiner l'erreur**,
+   sans publier le code qui dépend du nouveau schéma. Les sauvegardes sont
+   dans `/home/ubuntu/citizarm-backups/` et contiennent des données privées.
 3. Vérifier le résultat dans PostgreSQL/DBeaver, puis pousser le **code du
    site** : GitHub Actions le déploie sur OVH. Tester la fonctionnalité en
    production. Conserver la sauvegarde selon une politique de rétention sûre.
