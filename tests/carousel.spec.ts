@@ -59,11 +59,11 @@ test("the homepage only fetches selected carousel slides and chooses responsive 
     await loadedSlide(page.getByRole("img", { name: `${prefix} - Capture 1` }), variant);
   }
 
-  // The first four slides use the replacement captures; the last two remain unchanged.
+  // The first five slides use the replacement captures; the sixth remains unchanged.
   for (const [index, imageId] of [
     [2, "1790199184539"],
     [3, "1790199217235"],
-    [4, "1790198764015"],
+    [4, "1790199329365"],
     [5, "1790198858300"],
   ] as const) {
     await page.getByTestId(`button-revodemo-carousel-dot-${index}`).click();

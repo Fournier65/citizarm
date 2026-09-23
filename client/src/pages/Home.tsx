@@ -64,8 +64,8 @@ import revodemoScreenshot3 from "@assets/image_1790199184539.webp";
 import revodemoScreenshot3Small from "@assets/image_1790199184539-720.webp";
 import revodemoScreenshot4 from "@assets/image_1790199217235.webp";
 import revodemoScreenshot4Small from "@assets/image_1790199217235-720.webp";
-import revodemoScreenshot5 from "@assets/image_1790198764015.webp";
-import revodemoScreenshot5Small from "@assets/image_1790198764015-720.webp";
+import revodemoScreenshot5 from "@assets/image_1790199329365.webp";
+import revodemoScreenshot5Small from "@assets/image_1790199329365-720.webp";
 import revodemoScreenshot6 from "@assets/image_1790198858300.webp";
 import revodemoScreenshot6Small from "@assets/image_1790198858300-720.webp";
 
