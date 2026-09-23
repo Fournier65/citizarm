@@ -29,14 +29,18 @@ test("the homepage only fetches selected carousel slides and chooses responsive 
   const aacFirst = await loadedSlide(page.getByRole("img", { name: "AuxArmesCitoyens.fr - Capture 1" }), variant);
   await page.locator("#product + section").scrollIntoViewIfNeeded();
   const charteFirst = await loadedSlide(page.getByRole("img", { name: "Charte pour la Souveraineté Populaire - Capture 1" }), variant);
+  await page.locator("#product + section + section").scrollIntoViewIfNeeded();
+  const revodemoFirst = await loadedSlide(page.getByRole("img", { name: "Révodémo - Capture 1" }), variant);
+  await expect(page.getByRole("link", { name: "Visiter Révodémo" })).toHaveAttribute("href", "https://revodemo.fr/");
   await page.waitForTimeout(500);
-  expect(requested.length, "only the selected slide of each carousel should be fetched").toBe(2);
-  expect(new Set(requested)).toEqual(new Set([aacFirst, charteFirst]));
+  expect(requested.length, "only the selected slide of each carousel should be fetched").toBe(3);
+  expect(new Set(requested)).toEqual(new Set([aacFirst, charteFirst, revodemoFirst]));
 
-  // Both carousels should remain usable: desktop arrows and mobile dot controls.
+  // All three carousels should remain usable: desktop arrows and mobile dot controls.
   for (const [id, prefix] of [
     ["aac", "AuxArmesCitoyens.fr"],
     ["charte", "Charte pour la Souveraineté Populaire"],
+    ["revodemo", "Révodémo"],
   ] as const) {
     const second = page.getByRole("img", { name: `${prefix} - Capture 2` });
     if (testInfo.project.name === "desktop") {
@@ -51,5 +55,11 @@ test("the homepage only fetches selected carousel slides and chooses responsive 
       await page.getByTestId(`button-${id}-carousel-dot-0`).click();
     }
     await loadedSlide(page.getByRole("img", { name: `${prefix} - Capture 1` }), variant);
+  }
+
+  // The new case displays all four uploaded screenshots in order.
+  for (const index of [2, 3]) {
+    await page.getByTestId(`button-revodemo-carousel-dot-${index}`).click();
+    await loadedSlide(page.getByRole("img", { name: `Révodémo - Capture ${index + 1}` }), variant);
   }
 });

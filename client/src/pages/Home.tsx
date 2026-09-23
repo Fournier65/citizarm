@@ -56,6 +56,14 @@ import charteScreenshot3 from "@assets/image_1771727357455.webp";
 import charteScreenshot3Small from "@assets/image_1771727357455-720.webp";
 import charteScreenshot4 from "@assets/image_1771727402341.webp";
 import charteScreenshot4Small from "@assets/image_1771727402341-720.webp";
+import revodemoScreenshot1 from "@assets/image_1790198338772.webp";
+import revodemoScreenshot1Small from "@assets/image_1790198338772-720.webp";
+import revodemoScreenshot2 from "@assets/image_1790198379900.webp";
+import revodemoScreenshot2Small from "@assets/image_1790198379900-720.webp";
+import revodemoScreenshot3 from "@assets/image_1790198427724.webp";
+import revodemoScreenshot3Small from "@assets/image_1790198427724-720.webp";
+import revodemoScreenshot4 from "@assets/image_1790198488147.webp";
+import revodemoScreenshot4Small from "@assets/image_1790198488147-720.webp";
 
 const screenshots = [
   { src: aacScreenshot1, small: aacScreenshot1Small },
@@ -71,6 +79,13 @@ const charteScreenshots = [
   { src: charteScreenshot2, small: charteScreenshot2Small },
   { src: charteScreenshot3, small: charteScreenshot3Small },
   { src: charteScreenshot4, small: charteScreenshot4Small },
+];
+
+const revodemoScreenshots = [
+  { src: revodemoScreenshot1, small: revodemoScreenshot1Small },
+  { src: revodemoScreenshot2, small: revodemoScreenshot2Small },
+  { src: revodemoScreenshot3, small: revodemoScreenshot3Small },
+  { src: revodemoScreenshot4, small: revodemoScreenshot4Small },
 ];
 
 function ScreenshotCarousel({ images, altPrefix, id }: { images: { src: string; small: string }[]; altPrefix: string; id: string }) {
@@ -427,6 +442,54 @@ export default function Home() {
             <div className="lg:order-first">
               <ScreenshotCarousel images={charteScreenshots} altPrefix="Charte pour la Souveraineté Populaire" id="charte" />
             </div>
+          </div>
+        </div>
+      </LazySection>
+
+      {/* RÉVODÉMO SECTION */}
+      <LazySection className="py-24 bg-background relative overflow-hidden" fallbackHeight="600px">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className="text-primary font-bold tracking-wider uppercase text-sm mb-2 block">
+                Projet citoyen
+              </span>
+              <h2 className="font-display font-bold text-4xl md:text-5xl text-foreground mb-6 leading-tight">
+                Révodémo
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                Un mouvement pour une démocratie ascendante pyramidale : une plateforme
+                où les citoyens peuvent débattre, amender et proposer au vote les idées
+                du manifeste fondateur.
+              </p>
+
+              <ul className="space-y-4 mb-10">
+                {[
+                  "Un manifeste fondateur en huit parties",
+                  "Un compte citoyen pour participer aux débats et aux votes",
+                  "Une chaîne de relais pour une délégation révocable",
+                  "Une présentation du mouvement et de son initiateur"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-foreground font-medium">
+                    <CheckCircle2 className="text-green-500 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              <a href="https://revodemo.fr/" target="_blank" rel="noopener noreferrer">
+                <button className="px-8 py-4 rounded-xl bg-foreground text-background font-semibold hover:bg-primary hover:text-primary-foreground transition-colors duration-300 flex items-center gap-2">
+                  Visiter Révodémo <ArrowRight size={18} />
+                </button>
+              </a>
+            </motion.div>
+
+            <ScreenshotCarousel images={revodemoScreenshots} altPrefix="Révodémo" id="revodemo" />
           </div>
         </div>
       </LazySection>
