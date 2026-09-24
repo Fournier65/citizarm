@@ -4,8 +4,23 @@ import { ArrowRight, Mail, MapPin } from "lucide-react";
 import { SiX } from "react-icons/si";
 import { useSubscribeNewsletter } from "@/hooks/use-contact";
 import logo from "@assets/IMG_7582_1767640004029-96.webp";
+import { type Language, useLanguage } from "@/lib/language";
+
+const copy: Record<Language, {
+  description: string; navigation: string; home: string; about: string; solutions: string;
+  contact: string; newsletter: string; newsletterDescription: string; emailPlaceholder: string;
+  subscribe: string; rights: string; legal: string;
+}> = {
+  fr: { description: "Développer la démocratie directe grâce à des outils numériques innovants. Armer les esprits pour une citoyenneté éclairée et active.", navigation: "Navigation", home: "Accueil", about: "À propos", solutions: "Nos solutions", contact: "Contact", newsletter: "Newsletter", newsletterDescription: "Restez informé de nos dernières innovations démocratiques.", emailPlaceholder: "Votre adresse email", subscribe: "S'inscrire à la newsletter", rights: "Tous droits réservés.", legal: "Mentions légales" },
+  en: { description: "Strengthening direct democracy through innovative digital tools. Empowering minds for informed and active citizenship.", navigation: "Navigation", home: "Home", about: "About", solutions: "Our solutions", contact: "Contact", newsletter: "Newsletter", newsletterDescription: "Stay up to date with our latest democratic innovations.", emailPlaceholder: "Your email address", subscribe: "Subscribe to the newsletter", rights: "All rights reserved.", legal: "Legal notice" },
+  it: { description: "Sviluppare la democrazia diretta con strumenti digitali innovativi. Formare le menti per una cittadinanza informata e attiva.", navigation: "Navigazione", home: "Home", about: "Chi siamo", solutions: "Le nostre soluzioni", contact: "Contatti", newsletter: "Newsletter", newsletterDescription: "Resta aggiornato sulle nostre ultime innovazioni democratiche.", emailPlaceholder: "Il tuo indirizzo email", subscribe: "Iscriviti alla newsletter", rights: "Tutti i diritti riservati.", legal: "Note legali" },
+  de: { description: "Direkte Demokratie mit innovativen digitalen Werkzeugen fördern. Den Geist für eine informierte und aktive Bürgerschaft stärken.", navigation: "Navigation", home: "Startseite", about: "Über uns", solutions: "Unsere Lösungen", contact: "Kontakt", newsletter: "Newsletter", newsletterDescription: "Bleiben Sie über unsere neuesten demokratischen Innovationen informiert.", emailPlaceholder: "Ihre E-Mail-Adresse", subscribe: "Newsletter abonnieren", rights: "Alle Rechte vorbehalten.", legal: "Impressum" },
+  es: { description: "Impulsar la democracia directa con herramientas digitales innovadoras. Preparar las mentes para una ciudadanía informada y activa.", navigation: "Navegación", home: "Inicio", about: "Nosotros", solutions: "Nuestras soluciones", contact: "Contacto", newsletter: "Boletín", newsletterDescription: "Mantente al día de nuestras últimas innovaciones democráticas.", emailPlaceholder: "Tu correo electrónico", subscribe: "Suscribirse al boletín", rights: "Todos los derechos reservados.", legal: "Aviso legal" },
+};
 
 export function Footer() {
+  const { language } = useLanguage();
+  const t = copy[language];
   const [email, setEmail] = useState("");
   const subscribe = useSubscribeNewsletter();
   const [location, navigate] = useLocation();
@@ -54,18 +69,17 @@ export function Footer() {
               <span className="font-display font-bold text-2xl tracking-tight">citiZarm</span>
             </Link>
             <p className="text-slate-400 leading-relaxed max-w-sm">
-              Développer la démocratie directe grâce à des outils numériques innovants. 
-              Armer les esprits pour une citoyenneté éclairée et active.
+               {t.description}
             </p>
           </div>
 
           {/* Links Columns */}
           <div className="lg:col-span-2 space-y-6">
-            <h4 className="font-display font-semibold text-lg !text-white">Navigation</h4>
+             <h4 className="font-display font-semibold text-lg !text-white">{t.navigation}</h4>
             <ul className="space-y-3">
               <li>
                 <Link href="/" onClick={() => window.scrollTo(0, 0)} className="text-slate-400 hover:text-primary transition-colors">
-                  Accueil
+                   {t.home}
                 </Link>
               </li>
               <li>
@@ -73,7 +87,7 @@ export function Footer() {
                   onClick={() => goToSection("about")}
                   className="text-slate-400 hover:text-primary transition-colors cursor-pointer bg-transparent border-none p-0"
                 >
-                  À propos
+                   {t.about}
                 </button>
               </li>
               <li>
@@ -81,19 +95,19 @@ export function Footer() {
                   onClick={() => goToSection("product")}
                   className="text-slate-400 hover:text-primary transition-colors cursor-pointer bg-transparent border-none p-0"
                 >
-                  Nos solutions
+                   {t.solutions}
                 </button>
               </li>
               <li>
                 <Link href="/contact" onClick={() => window.scrollTo(0, 0)} className="text-slate-400 hover:text-primary transition-colors">
-                  Contact
+                   {t.contact}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div className="lg:col-span-3 space-y-6">
-            <h4 className="font-display font-semibold text-lg !text-white">Contact</h4>
+             <h4 className="font-display font-semibold text-lg !text-white">{t.contact}</h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-slate-400">
                 <MapPin className="shrink-0 mt-1 text-primary" size={18} />
@@ -125,15 +139,16 @@ export function Footer() {
 
           {/* Newsletter Column */}
           <div className="lg:col-span-3 space-y-6">
-            <h4 className="font-display font-semibold text-lg !text-white">Newsletter</h4>
+             <h4 className="font-display font-semibold text-lg !text-white">{t.newsletter}</h4>
             <p className="text-slate-400 text-sm">
-              Restez informé de nos dernières innovations démocratiques.
+               {t.newsletterDescription}
             </p>
             <form onSubmit={handleSubscribe} className="space-y-3">
               <div className="relative">
                 <input
                   type="email"
-                  placeholder="Votre adresse email"
+                   placeholder={t.emailPlaceholder}
+                   aria-label={t.emailPlaceholder}
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -141,6 +156,7 @@ export function Footer() {
                 />
                 <button
                   type="submit"
+                   aria-label={t.subscribe}
                   disabled={subscribe.isPending}
                   className="absolute right-1 top-1 p-2 rounded-lg bg-primary text-white hover:bg-primary/90 disabled:opacity-50 transition-colors"
                 >
@@ -152,9 +168,9 @@ export function Footer() {
         </div>
 
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
-          <p>© {new Date().getFullYear()} citiZarm. Tous droits réservés.</p>
+           <p>© {new Date().getFullYear()} citiZarm. {t.rights}</p>
           <div className="flex gap-6">
-            <Link href="/mentions-legales" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition-colors">Mentions légales</Link>
+             <Link href="/mentions-legales" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition-colors">{t.legal}</Link>
           </div>
         </div>
       </div>
