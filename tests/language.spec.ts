@@ -37,3 +37,25 @@ test("the flag menu switches all five languages and keeps the choice across page
   await page.goto("/mentions-legales");
   await expect(page.getByRole("heading", { name: "Legal notice" })).toBeVisible();
 });
+
+test("the language menu has an opaque background in light and dark modes", async ({ page }) => {
+  const backgrounds: string[] = [];
+  for (const theme of ["light", "dark"]) {
+    await page.goto("/");
+    await page.evaluate((value) => localStorage.setItem("theme", value), theme);
+    await page.reload();
+    await expect(page.locator("html")).toHaveClass(new RegExp(`\\b${theme}\\b`));
+
+    const flag = page.locator('[data-testid="language-switcher"]:visible');
+    const triggerBackground = await flag.evaluate((element) => getComputedStyle(element).backgroundColor);
+    expect(triggerBackground).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
+
+    await flag.click();
+    const menu = page.getByRole("menu");
+    await expect(menu).toBeVisible();
+    const menuBackground = await menu.evaluate((element) => getComputedStyle(element).backgroundColor);
+    expect(menuBackground).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
+    backgrounds.push(menuBackground);
+  }
+  expect(backgrounds[0]).not.toBe(backgrounds[1]);
+});

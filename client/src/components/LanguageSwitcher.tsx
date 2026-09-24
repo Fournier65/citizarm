@@ -83,13 +83,13 @@ export function LanguageSwitcher() {
           type="button"
           data-testid="language-switcher"
           aria-label={`${labels[language]} : ${current.name}`}
-          className="inline-flex h-10 items-center gap-1 rounded-full border border-border bg-background/80 px-2.5 text-foreground shadow-sm hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="inline-flex h-10 items-center gap-1 rounded-full border border-border bg-background px-2.5 text-foreground shadow-sm hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <FlagIcon language={language} />
           <ChevronDown size={14} aria-hidden="true" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={8} className="min-w-40">
+      <DropdownMenuContent align="end" sideOffset={8} className="min-w-40 border-border bg-background text-foreground shadow-xl">
         {choices.filter(({ code }) => code !== language).map(({ code, name }) => (
           <DropdownMenuItem key={code} lang={code} onSelect={() => setLanguage(code)} className="gap-3 py-2.5">
             <FlagIcon language={code} />
