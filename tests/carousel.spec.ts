@@ -73,3 +73,34 @@ test("the homepage only fetches selected carousel slides and chooses responsive 
     expect(src).toContain(`image_${imageId}`);
   }
 });
+
+test("the Révodémo carousel uses all six Italian screenshots only in Italian", async ({ page }, testInfo) => {
+  const variant = testInfo.project.name === "mobile" ? "720" : "960";
+  await page.goto("/");
+  await page.locator("#product + section + section").scrollIntoViewIfNeeded();
+  await loadedSlide(page.getByRole("img", { name: "Révodémo - Capture 1" }), variant);
+
+  const flag = page.locator('[data-testid="language-switcher"]:visible');
+  await flag.click();
+  await page.getByRole("menuitem", { name: "Italiano" }).click();
+  await expect(page.getByRole("menu")).toBeHidden();
+
+  for (const [index, id] of [
+    "1790280216448",
+    "1790280248310",
+    "1790280378094",
+    "1790280411066",
+    "1790280452665",
+    "1790280499760",
+  ].entries()) {
+    if (index > 0) await page.getByTestId(`button-revodemo-carousel-dot-${index}`).click();
+    const src = await loadedSlide(page.getByRole("img", { name: `Révodémo - Schermata ${index + 1}` }), variant);
+    expect(src).toContain(`image_${id}`);
+  }
+
+  await flag.click();
+  await page.getByRole("menuitem", { name: "Français" }).click();
+  await expect(page.getByRole("menu")).toBeHidden();
+  const frenchSrc = await loadedSlide(page.getByRole("img", { name: "Révodémo - Capture 6" }), variant);
+  expect(frenchSrc).toContain("image_1790198858300");
+});

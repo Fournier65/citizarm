@@ -356,6 +356,18 @@ import revodemoScreenshot5 from "@assets/image_1790199329365.webp";
 import revodemoScreenshot5Small from "@assets/image_1790199329365-720.webp";
 import revodemoScreenshot6 from "@assets/image_1790198858300.webp";
 import revodemoScreenshot6Small from "@assets/image_1790198858300-720.webp";
+import revodemoItScreenshot1 from "@assets/image_1790280216448.webp";
+import revodemoItScreenshot1Small from "@assets/image_1790280216448-720.webp";
+import revodemoItScreenshot2 from "@assets/image_1790280248310.webp";
+import revodemoItScreenshot2Small from "@assets/image_1790280248310-720.webp";
+import revodemoItScreenshot3 from "@assets/image_1790280378094.webp";
+import revodemoItScreenshot3Small from "@assets/image_1790280378094-720.webp";
+import revodemoItScreenshot4 from "@assets/image_1790280411066.webp";
+import revodemoItScreenshot4Small from "@assets/image_1790280411066-720.webp";
+import revodemoItScreenshot5 from "@assets/image_1790280452665.webp";
+import revodemoItScreenshot5Small from "@assets/image_1790280452665-720.webp";
+import revodemoItScreenshot6 from "@assets/image_1790280499760.webp";
+import revodemoItScreenshot6Small from "@assets/image_1790280499760-720.webp";
 
 const screenshots = [
   { src: aacScreenshot1, small: aacScreenshot1Small },
@@ -380,6 +392,15 @@ const revodemoScreenshots = [
   { src: revodemoScreenshot4, small: revodemoScreenshot4Small },
   { src: revodemoScreenshot5, small: revodemoScreenshot5Small },
   { src: revodemoScreenshot6, small: revodemoScreenshot6Small },
+];
+
+const revodemoItalianScreenshots = [
+  { src: revodemoItScreenshot1, small: revodemoItScreenshot1Small },
+  { src: revodemoItScreenshot2, small: revodemoItScreenshot2Small },
+  { src: revodemoItScreenshot3, small: revodemoItScreenshot3Small },
+  { src: revodemoItScreenshot4, small: revodemoItScreenshot4Small },
+  { src: revodemoItScreenshot5, small: revodemoItScreenshot5Small },
+  { src: revodemoItScreenshot6, small: revodemoItScreenshot6Small },
 ];
 
 function ScreenshotCarousel({ images, altPrefix, id, labels }: { images: { src: string; small: string }[]; altPrefix: string; id: string; labels: HomeTranslations["carousel"] }) {
@@ -758,7 +779,7 @@ export default function Home() {
               </a>
             </motion.div>
 
-            <ScreenshotCarousel images={revodemoScreenshots} altPrefix="Révodémo" id="revodemo" labels={t.carousel} />
+            <ScreenshotCarousel images={language === "it" ? revodemoItalianScreenshots : revodemoScreenshots} altPrefix="Révodémo" id="revodemo" labels={t.carousel} />
           </div>
         </div>
       </LazySection>
