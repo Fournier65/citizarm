@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Publie uniquement le SQL de migration, jamais les commits locaux du site.
+set -euo pipefail
+
+migration_path=ops/db/migrations/migration.sql
+
+if [ "$#" -ne 0 ]; then
+  echo "Usage : ./pubdb (sans argument)" >&2
+  exit 1
+fi
+
+repo="$(git rev-parse --show-toplevel)"
+if [ "$PWD" != "$repo" ]; then
+  echo "Lancer ./pubdb depuis la racine du projet : $repo" >&2
+  exit 1
+fi
+if [ ! -f "$migration_path" ] || [ -L "$migration_path" ] || [ ! -s "$migration_path" ]; then
+  echo "Fichier SQL absent, vide ou lien symbolique : $migration_path" >&2
+  exit 1
+fi
+
+# Toujours partir de la branche réellement publiée, pas des checkpoints locaux.
+git fetch --no-tags github main
+base="$(git rev-parse --verify 'FETCH_HEAD^{commit}')"
+
+temp_dir="$(mktemp -d "${TMPDIR:-/tmp}/pubdb.XXXXXXXX")"
+cleanup() {
+  git -C "$repo" worktree remove --force "$temp_dir" >/dev/null 2>&1 ||
+    rmdir "$temp_dir" 2>/dev/null || true
+}
+trap cleanup EXIT
+
+git worktree add --detach "$temp_dir" "$base" >/dev/null
+install -m 644 "$migration_path" "$temp_dir/$migration_path"
+git -C "$temp_dir" add -- "$migration_path"
+
+if git -C "$temp_dir" diff --cached --quiet; then
+  echo "Ce SQL est déjà identique à celui de GitHub ; rien à publier."
+  exit 0
+fi
+
+git -C "$temp_dir" commit -m "Préparer la migration SQL OVH" >/dev/null
+outgoing="$(git -C "$temp_dir" diff --name-only "$base" HEAD)"
+if [ "$outgoing" != "$migration_path" ]; then
+  echo "Arrêt : le commit ne contient pas uniquement $migration_path." >&2
+  exit 1
+fi
+
+echo "Publication de $migration_path uniquement vers github/main..."
+git -C "$temp_dir" push github HEAD:refs/heads/main
+echo "SQL publié. Attendre le déploiement GitHub avant de lancer la migration sur OVH."
+echo "La branche main locale n'a pas été modifiée : elle peut maintenant diverger de GitHub."
+echo "Ne pas faire git push github main pour le code du site avant de la réaligner."
