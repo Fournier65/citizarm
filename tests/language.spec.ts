@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("the flag menu switches all five languages and keeps the choice across pages and reloads", async ({ page }) => {
   await page.goto("/");
   const flag = page.locator('[data-testid="language-switcher"]:visible');
-  await expect(flag).toContainText("🇫🇷");
+  await expect(flag.locator("svg[data-flag]")).toHaveAttribute("data-flag", "fr");
   const flagBounds = await flag.boundingBox();
   expect(flagBounds).not.toBeNull();
   expect(flagBounds!.x + flagBounds!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
@@ -16,10 +16,11 @@ test("the flag menu switches all five languages and keeps the choice across page
     ["Français", "fr", "Armer les esprits pour la démocratie"],
   ]) {
     await flag.click();
+    await expect(page.getByRole("menuitem", { name }).locator("svg[data-flag]")).toHaveAttribute("data-flag", code);
     await page.getByRole("menuitem", { name }).click();
     await expect(page.locator("html")).toHaveAttribute("lang", code);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
-    await expect(flag).not.toContainText(name === "Français" ? "🇬🇧" : "🇫🇷");
+    await expect(flag.locator("svg[data-flag]")).toHaveAttribute("data-flag", code);
   }
 
   await flag.click();
