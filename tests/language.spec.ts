@@ -1,5 +1,46 @@
 import { expect, test } from "@playwright/test";
 
+test.use({ locale: "fr-FR" });
+
+test("a first visit follows the browser language, with French for unsupported languages", async ({ browser }) => {
+  for (const [locale, expected] of [
+    ["fr-CA", "fr"],
+    ["en-US", "en"],
+    ["it-IT", "it"],
+    ["de-AT", "de"],
+    ["es-MX", "es"],
+    ["pt-BR", "fr"],
+  ]) {
+    const context = await browser.newContext({ locale });
+    try {
+      const page = await context.newPage();
+      await page.goto("/");
+      await expect(page.locator("html")).toHaveAttribute("lang", expected);
+      await expect(page.locator('[data-testid="language-switcher"]:visible svg[data-flag]')).toHaveAttribute("data-flag", expected);
+      expect(await page.evaluate(() => localStorage.getItem("citizarm-language-selection"))).toBeNull();
+    } finally {
+      await context.close();
+    }
+  }
+
+  const context = await browser.newContext({ locale: "en-US" });
+  try {
+    // Older versions wrote French even without an explicit choice.
+    await context.addInitScript(() => localStorage.setItem("citizarm-language", "fr"));
+    const page = await context.newPage();
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await page.locator('[data-testid="language-switcher"]:visible').click();
+    await page.getByRole("menuitem", { name: "Français" }).click();
+    await expect(page.locator("html")).toHaveAttribute("lang", "fr");
+    expect(await page.evaluate(() => localStorage.getItem("citizarm-language-selection"))).toBe("fr");
+    await page.reload();
+    await expect(page.locator("html")).toHaveAttribute("lang", "fr");
+  } finally {
+    await context.close();
+  }
+});
+
 test("the flag menu switches all five languages and keeps the choice across pages and reloads", async ({ page }) => {
   await page.goto("/");
   const flag = page.locator('[data-testid="language-switcher"]:visible');

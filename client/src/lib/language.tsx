@@ -2,7 +2,8 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 
 export type Language = "fr" | "en" | "it" | "de" | "es";
 
-const STORAGE_KEY = "citizarm-language";
+const STORAGE_KEY = "citizarm-language-selection";
+const LEGACY_STORAGE_KEY = "citizarm-language";
 const supported: Language[] = ["fr", "en", "it", "de", "es"];
 
 const pageMetadata: Record<Language, { title: string; description: string; locale: string }> = {
@@ -44,14 +45,29 @@ function initialLanguage(): Language {
   try {
     const saved = window.localStorage.getItem(STORAGE_KEY);
     if (supported.includes(saved as Language)) return saved as Language;
+
+    // The old version saved "fr" automatically for everyone, so it cannot
+    // identify a deliberate French choice. Only non-French values were chosen.
+    const legacy = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (legacy !== "fr" && supported.includes(legacy as Language)) return legacy as Language;
   } catch {
-    // Private browsing may prevent local storage. French remains the default.
+    // Private browsing may prevent local storage; browser detection still works.
   }
-  return "fr";
+  const browserCode = navigator.language?.split(/[-_]/)[0].toLowerCase();
+  return supported.includes(browserCode as Language) ? browserCode as Language : "fr";
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>(initialLanguage);
+  const [language, setCurrentLanguage] = useState<Language>(initialLanguage);
+
+  const setLanguage = (selected: Language) => {
+    setCurrentLanguage(selected);
+    try {
+      window.localStorage.setItem(STORAGE_KEY, selected);
+    } catch {
+      // The choice still applies until the page is closed.
+    }
+  };
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -63,11 +79,6 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     document.querySelector('meta[property="og:locale"]')?.setAttribute("content", metadata.locale);
     document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", metadata.title);
     document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", metadata.description);
-    try {
-      window.localStorage.setItem(STORAGE_KEY, language);
-    } catch {
-      // Changing the language still works for this session.
-    }
   }, [language]);
 
   return <LanguageContext.Provider value={{ language, setLanguage }}>{children}</LanguageContext.Provider>;
