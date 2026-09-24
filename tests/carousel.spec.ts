@@ -1,5 +1,7 @@
 import { expect, test, type Locator } from "@playwright/test";
 
+test.use({ locale: "fr-FR" });
+
 const carouselImage = /\/image_\d+(?:-720)?\.webp$/;
 
 async function loadedSlide(slide: Locator, expectedVariant: "720" | "960") {
@@ -32,7 +34,7 @@ test("the homepage only fetches selected carousel slides and chooses responsive 
   await page.locator("#product + section + section").scrollIntoViewIfNeeded();
   const revodemoFirst = await loadedSlide(page.getByRole("img", { name: "Révodémo - Capture 1" }), variant);
   expect(revodemoFirst).toContain("image_1790199115795");
-  await expect(page.getByRole("link", { name: "Visiter Révodémo" })).toHaveAttribute("href", "https://revodemo.fr/");
+  await expect(page.getByRole("link", { name: "Visiter Révodémo" })).toHaveAttribute("href", "https://revodemo.fr/fr");
   await page.waitForTimeout(500);
   expect(requested.length, "only the selected slide of each carousel should be fetched").toBe(3);
   expect(new Set(requested)).toEqual(new Set([aacFirst, charteFirst, revodemoFirst]));

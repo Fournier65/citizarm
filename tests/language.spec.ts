@@ -41,6 +41,28 @@ test("a first visit follows the browser language, with French for unsupported la
   }
 });
 
+test("the Révodémo link follows the selected language", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#product + section + section").scrollIntoViewIfNeeded();
+  const link = page.locator('a[href^="https://revodemo.fr/"]');
+  const flag = page.locator('[data-testid="language-switcher"]:visible');
+
+  for (const [code, name] of [
+    ["fr", null],
+    ["it", "Italiano"],
+    ["en", "English"],
+    ["de", "Deutsch"],
+    ["es", "Español"],
+  ] as const) {
+    if (name) {
+      await flag.click();
+      await page.getByRole("menuitem", { name }).click();
+      await expect(page.getByRole("menu")).toBeHidden();
+    }
+    await expect(link).toHaveAttribute("href", `https://revodemo.fr/${code}`);
+  }
+});
+
 test("the flag menu switches all five languages and keeps the choice across pages and reloads", async ({ page }) => {
   await page.goto("/");
   const flag = page.locator('[data-testid="language-switcher"]:visible');

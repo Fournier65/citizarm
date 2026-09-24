@@ -751,7 +751,7 @@ export default function Home() {
                 ))}
               </ul>
 
-              <a href="https://revodemo.fr/" target="_blank" rel="noopener noreferrer">
+              <a href={`https://revodemo.fr/${language}`} target="_blank" rel="noopener noreferrer">
                 <button className="px-8 py-4 rounded-xl bg-foreground text-background font-semibold hover:bg-primary hover:text-primary-foreground transition-colors duration-300 flex items-center gap-2">
                   {t.products.revodemo.visit} <ArrowRight size={18} />
                 </button>
