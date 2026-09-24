@@ -62,6 +62,7 @@ test("the flag menu switches all five languages and keeps the choice across page
     await expect(page.locator("html")).toHaveAttribute("lang", code);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
     await expect(flag.locator("svg[data-flag]")).toHaveAttribute("data-flag", code);
+    await expect(page.getByRole("menu")).toBeHidden();
   }
 
   await flag.click();
@@ -91,14 +92,27 @@ test("the language menu has an opaque background in light and dark modes", async
     const triggerBackground = await flag.evaluate((element) => getComputedStyle(element).backgroundColor);
     expect(triggerBackground).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
     await flag.hover();
-    await expect(flag).toHaveCSS("background-color", triggerBackground);
+    const hoverBackground = await flag.evaluate((element) => getComputedStyle(element).backgroundColor);
+    expect(hoverBackground).not.toBe(triggerBackground);
 
+    const initialBounds = await flag.boundingBox();
     await flag.click();
     const menu = page.getByRole("menu");
     await expect(menu).toBeVisible();
+    await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
+    const openedBounds = await flag.boundingBox();
+    expect(openedBounds!.x).toBeCloseTo(initialBounds!.x, 1);
+    expect(openedBounds!.y).toBeCloseTo(initialBounds!.y, 1);
     const menuBackground = await menu.evaluate((element) => getComputedStyle(element).backgroundColor);
     expect(menuBackground).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
     backgrounds.push(menuBackground);
+    await page.getByRole("menuitem").first().click();
+    await expect(menu).toBeHidden();
+    await page.mouse.move(400, 500);
+    await expect(flag).toHaveCSS("background-color", triggerBackground);
+    await expect(flag).toHaveCSS("outline-color", "rgba(0, 0, 0, 0)");
+    const shadowAfterClick = await flag.evaluate((element) => getComputedStyle(element).boxShadow);
+    expect(shadowAfterClick).not.toContain("0px 0px 0px 2px");
   }
   expect(backgrounds[0]).not.toBe(backgrounds[1]);
 });
