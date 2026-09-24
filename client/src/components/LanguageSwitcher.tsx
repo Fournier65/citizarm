@@ -83,7 +83,7 @@ export function LanguageSwitcher() {
           type="button"
           data-testid="language-switcher"
           aria-label={`${labels[language]} : ${current.name}`}
-          className="inline-flex h-10 items-center gap-1 rounded-full border border-border bg-background px-2.5 text-foreground shadow-sm hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="inline-flex h-10 items-center gap-1 rounded-full border border-border bg-background px-2.5 text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/50"
         >
           <FlagIcon language={language} />
           <ChevronDown size={14} aria-hidden="true" />

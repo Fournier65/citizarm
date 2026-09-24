@@ -90,6 +90,8 @@ test("the language menu has an opaque background in light and dark modes", async
     const flag = page.locator('[data-testid="language-switcher"]:visible');
     const triggerBackground = await flag.evaluate((element) => getComputedStyle(element).backgroundColor);
     expect(triggerBackground).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
+    await flag.hover();
+    await expect(flag).toHaveCSS("background-color", triggerBackground);
 
     await flag.click();
     const menu = page.getByRole("menu");
