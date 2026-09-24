@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 
-const FROM_EMAIL = 'admin@auxarmescitoyens.fr';
+const FROM_EMAIL = 'contact@citizarm.fr';
 
 export function getResendClient() {
   const apiKey = process.env.RESEND_API_KEY;

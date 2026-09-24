@@ -412,7 +412,7 @@ docker compose --env-file .env logs --tail=100 app | grep '\[Resend\]'
 ```
 
 Si la clé est présente mais que l'envoi échoue, vérifier le message d'erreur
-Resend (clé invalide, permissions, domaine expéditeur `auxarmescitoyens.fr`
+Resend (clé invalide, permissions, domaine expéditeur `citizarm.fr`
 non vérifié, etc.). Le formulaire enregistre le message dans la base avant
 l'envoi : ne pas le soumettre plusieurs fois pour éviter les doublons.
 
