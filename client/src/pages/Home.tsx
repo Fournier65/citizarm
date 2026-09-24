@@ -380,6 +380,18 @@ import revodemoEnScreenshot5 from "@assets/image_1790280727693.webp";
 import revodemoEnScreenshot5Small from "@assets/image_1790280727693-720.webp";
 import revodemoEnScreenshot6 from "@assets/image_1790280795773.webp";
 import revodemoEnScreenshot6Small from "@assets/image_1790280795773-720.webp";
+import revodemoDeScreenshot1 from "@assets/image_1790280916099.webp";
+import revodemoDeScreenshot1Small from "@assets/image_1790280916099-720.webp";
+import revodemoDeScreenshot2 from "@assets/image_1790280935596.webp";
+import revodemoDeScreenshot2Small from "@assets/image_1790280935596-720.webp";
+import revodemoDeScreenshot3 from "@assets/image_1790280968784.webp";
+import revodemoDeScreenshot3Small from "@assets/image_1790280968784-720.webp";
+import revodemoDeScreenshot4 from "@assets/image_1790281151306.webp";
+import revodemoDeScreenshot4Small from "@assets/image_1790281151306-720.webp";
+import revodemoDeScreenshot5 from "@assets/image_1790281179465.webp";
+import revodemoDeScreenshot5Small from "@assets/image_1790281179465-720.webp";
+import revodemoDeScreenshot6 from "@assets/image_1790281208761.webp";
+import revodemoDeScreenshot6Small from "@assets/image_1790281208761-720.webp";
 
 const screenshots = [
   { src: aacScreenshot1, small: aacScreenshot1Small },
@@ -424,11 +436,20 @@ const revodemoEnglishScreenshots = [
   { src: revodemoEnScreenshot6, small: revodemoEnScreenshot6Small },
 ];
 
+const revodemoGermanScreenshots = [
+  { src: revodemoDeScreenshot1, small: revodemoDeScreenshot1Small },
+  { src: revodemoDeScreenshot2, small: revodemoDeScreenshot2Small },
+  { src: revodemoDeScreenshot3, small: revodemoDeScreenshot3Small },
+  { src: revodemoDeScreenshot4, small: revodemoDeScreenshot4Small },
+  { src: revodemoDeScreenshot5, small: revodemoDeScreenshot5Small },
+  { src: revodemoDeScreenshot6, small: revodemoDeScreenshot6Small },
+];
+
 const revodemoScreenshotsByLanguage = {
   fr: revodemoScreenshots,
   en: revodemoEnglishScreenshots,
   it: revodemoItalianScreenshots,
-  de: revodemoScreenshots,
+  de: revodemoGermanScreenshots,
   es: revodemoScreenshots,
 };
 

@@ -135,3 +135,34 @@ test("the Révodémo carousel uses all six English screenshots only in English",
   const italianSrc = await loadedSlide(page.getByRole("img", { name: "Révodémo - Schermata 6" }), variant);
   expect(italianSrc).toContain("image_1790280499760");
 });
+
+test("the Révodémo carousel uses all six German screenshots only in German", async ({ page }, testInfo) => {
+  const variant = testInfo.project.name === "mobile" ? "720" : "960";
+  await page.goto("/");
+  await page.locator("#product + section + section").scrollIntoViewIfNeeded();
+  await loadedSlide(page.getByRole("img", { name: "Révodémo - Capture 1" }), variant);
+
+  const flag = page.locator('[data-testid="language-switcher"]:visible');
+  await flag.click();
+  await page.getByRole("menuitem", { name: "Deutsch" }).click();
+  await expect(page.getByRole("menu")).toBeHidden();
+
+  for (const [index, id] of [
+    "1790280916099",
+    "1790280935596",
+    "1790280968784",
+    "1790281151306",
+    "1790281179465",
+    "1790281208761",
+  ].entries()) {
+    if (index > 0) await page.getByTestId(`button-revodemo-carousel-dot-${index}`).click();
+    const src = await loadedSlide(page.getByRole("img", { name: `Révodémo - Bildschirmaufnahme ${index + 1}` }), variant);
+    expect(src).toContain(`image_${id}`);
+  }
+
+  await flag.click();
+  await page.getByRole("menuitem", { name: "English" }).click();
+  await expect(page.getByRole("menu")).toBeHidden();
+  const englishSrc = await loadedSlide(page.getByRole("img", { name: "Révodémo - Screenshot 6" }), variant);
+  expect(englishSrc).toContain("image_1790280795773");
+});
