@@ -356,6 +356,8 @@ import revodemoScreenshot5 from "@assets/image_1790199329365.webp";
 import revodemoScreenshot5Small from "@assets/image_1790199329365-720.webp";
 import revodemoScreenshot6 from "@assets/image_1790198858300.webp";
 import revodemoScreenshot6Small from "@assets/image_1790198858300-720.webp";
+import revodemoScreenshot7 from "@assets/image_1790286251613.webp";
+import revodemoScreenshot7Small from "@assets/image_1790286251613-720.webp";
 import revodemoItScreenshot1 from "@assets/image_1790280216448.webp";
 import revodemoItScreenshot1Small from "@assets/image_1790280216448-720.webp";
 import revodemoItScreenshot2 from "@assets/image_1790280248310.webp";
@@ -428,6 +430,7 @@ const revodemoScreenshots = [
   { src: revodemoScreenshot4, small: revodemoScreenshot4Small },
   { src: revodemoScreenshot5, small: revodemoScreenshot5Small },
   { src: revodemoScreenshot6, small: revodemoScreenshot6Small },
+  { src: revodemoScreenshot7, small: revodemoScreenshot7Small },
 ];
 
 const revodemoItalianScreenshots = [
@@ -478,8 +481,13 @@ function ScreenshotCarousel({ images, altPrefix, id, labels }: { images: { src: 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
-  const currentImage = images[currentIndex];
+  const activeIndex = currentIndex % images.length;
+  const currentImage = images[activeIndex];
   const isCurrentLoaded = loadedImages.has(currentImage.src);
+
+  useEffect(() => {
+    setCurrentIndex((previous) => previous % images.length);
+  }, [images.length]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -547,11 +555,11 @@ function ScreenshotCarousel({ images, altPrefix, id, labels }: { images: { src: 
           )}
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
             <motion.img
-              key={currentIndex}
+              key={activeIndex}
               src={currentImage.src}
               srcSet={`${currentImage.small} 720w, ${currentImage.src} 960w`}
               sizes="(min-width: 1024px) 600px, calc(100vw - 32px)"
-              alt={`${altPrefix} - ${labels.slideAlt} ${currentIndex + 1}`}
+              alt={`${altPrefix} - ${labels.slideAlt} ${activeIndex + 1}`}
               custom={direction}
               variants={slideVariants}
               initial="enter"
@@ -575,13 +583,13 @@ function ScreenshotCarousel({ images, altPrefix, id, labels }: { images: { src: 
           <button
             key={index}
             onClick={() => {
-              setDirection(index > currentIndex ? 1 : -1);
+              setDirection(index > activeIndex ? 1 : -1);
               setCurrentIndex(index);
             }}
             aria-label={labels.goToSlide(index + 1)}
-            aria-current={index === currentIndex ? "true" : undefined}
+            aria-current={index === activeIndex ? "true" : undefined}
             className={`w-2 h-2 rounded-full transition-all ${
-              index === currentIndex 
+              index === activeIndex
                 ? "bg-primary w-6" 
                 : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
             }`}

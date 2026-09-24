@@ -55,17 +55,26 @@ test("the homepage only fetches selected carousel slides and chooses responsive 
     await loadedSlide(page.getByRole("img", { name: `${prefix} - Capture 1` }), variant);
   }
 
-  // The first five slides use the replacement captures; the sixth remains unchanged.
+  // The first five slides use replacement captures; the sixth remains unchanged, followed by the new FAQ page.
   for (const [index, imageId] of [
     [2, "1790199184539"],
     [3, "1790199217235"],
     [4, "1790199329365"],
     [5, "1790198858300"],
+    [6, "1790286251613"],
   ] as const) {
     await page.getByTestId(`button-revodemo-carousel-dot-${index}`).click();
     const src = await loadedSlide(page.getByRole("img", { name: `Révodémo - Capture ${index + 1}` }), variant);
     expect(src).toContain(`image_${imageId}`);
   }
+
+  // Switching to a six-slide language from the seventh French slide remains valid.
+  const flag = page.locator('[data-testid="language-switcher"]:visible');
+  await flag.click();
+  await page.getByRole("menuitem", { name: "Italiano" }).click();
+  await expect(page.getByTestId("button-revodemo-carousel-dot-6")).toHaveCount(0);
+  const italianSrc = await loadedSlide(page.getByRole("img", { name: "Révodémo - Schermata 1" }), variant);
+  expect(italianSrc).toContain("image_1790280216448");
 });
 
 test("the Révodémo carousel uses all six Italian screenshots only in Italian", async ({ page }, testInfo) => {
