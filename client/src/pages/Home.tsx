@@ -368,6 +368,18 @@ import revodemoItScreenshot5 from "@assets/image_1790280452665.webp";
 import revodemoItScreenshot5Small from "@assets/image_1790280452665-720.webp";
 import revodemoItScreenshot6 from "@assets/image_1790280499760.webp";
 import revodemoItScreenshot6Small from "@assets/image_1790280499760-720.webp";
+import revodemoEnScreenshot1 from "@assets/image_1790280579731.webp";
+import revodemoEnScreenshot1Small from "@assets/image_1790280579731-720.webp";
+import revodemoEnScreenshot2 from "@assets/image_1790280581603.webp";
+import revodemoEnScreenshot2Small from "@assets/image_1790280581603-720.webp";
+import revodemoEnScreenshot3 from "@assets/image_1790280675822.webp";
+import revodemoEnScreenshot3Small from "@assets/image_1790280675822-720.webp";
+import revodemoEnScreenshot4 from "@assets/image_1790280706849.webp";
+import revodemoEnScreenshot4Small from "@assets/image_1790280706849-720.webp";
+import revodemoEnScreenshot5 from "@assets/image_1790280727693.webp";
+import revodemoEnScreenshot5Small from "@assets/image_1790280727693-720.webp";
+import revodemoEnScreenshot6 from "@assets/image_1790280795773.webp";
+import revodemoEnScreenshot6Small from "@assets/image_1790280795773-720.webp";
 
 const screenshots = [
   { src: aacScreenshot1, small: aacScreenshot1Small },
@@ -402,6 +414,23 @@ const revodemoItalianScreenshots = [
   { src: revodemoItScreenshot5, small: revodemoItScreenshot5Small },
   { src: revodemoItScreenshot6, small: revodemoItScreenshot6Small },
 ];
+
+const revodemoEnglishScreenshots = [
+  { src: revodemoEnScreenshot1, small: revodemoEnScreenshot1Small },
+  { src: revodemoEnScreenshot2, small: revodemoEnScreenshot2Small },
+  { src: revodemoEnScreenshot3, small: revodemoEnScreenshot3Small },
+  { src: revodemoEnScreenshot4, small: revodemoEnScreenshot4Small },
+  { src: revodemoEnScreenshot5, small: revodemoEnScreenshot5Small },
+  { src: revodemoEnScreenshot6, small: revodemoEnScreenshot6Small },
+];
+
+const revodemoScreenshotsByLanguage = {
+  fr: revodemoScreenshots,
+  en: revodemoEnglishScreenshots,
+  it: revodemoItalianScreenshots,
+  de: revodemoScreenshots,
+  es: revodemoScreenshots,
+};
 
 function ScreenshotCarousel({ images, altPrefix, id, labels }: { images: { src: string; small: string }[]; altPrefix: string; id: string; labels: HomeTranslations["carousel"] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -779,7 +808,7 @@ export default function Home() {
               </a>
             </motion.div>
 
-            <ScreenshotCarousel images={language === "it" ? revodemoItalianScreenshots : revodemoScreenshots} altPrefix="Révodémo" id="revodemo" labels={t.carousel} />
+            <ScreenshotCarousel images={revodemoScreenshotsByLanguage[language]} altPrefix="Révodémo" id="revodemo" labels={t.carousel} />
           </div>
         </div>
       </LazySection>
