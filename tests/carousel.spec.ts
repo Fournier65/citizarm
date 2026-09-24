@@ -39,25 +39,19 @@ test("the homepage only fetches selected carousel slides and chooses responsive 
   expect(requested.length, "only the selected slide of each carousel should be fetched").toBe(3);
   expect(new Set(requested)).toEqual(new Set([aacFirst, charteFirst, revodemoFirst]));
 
-  // All three carousels should remain usable: desktop arrows and mobile dot controls.
+  // All three carousels remain usable via dots, without arrows obscuring the images.
   for (const [id, prefix] of [
     ["aac", "AuxArmesCitoyens.fr"],
     ["charte", "Charte pour la Souveraineté Populaire"],
     ["revodemo", "Révodémo"],
   ] as const) {
     const second = page.getByRole("img", { name: `${prefix} - Capture 2` });
-    if (testInfo.project.name === "desktop") {
-      await page.getByTestId(`button-${id}-carousel-next`).click();
-    } else {
-      await page.getByTestId(`button-${id}-carousel-dot-1`).click();
-    }
+    await expect(page.getByTestId(`button-${id}-carousel-next`)).toHaveCount(0);
+    await expect(page.getByTestId(`button-${id}-carousel-prev`)).toHaveCount(0);
+    await page.getByTestId(`button-${id}-carousel-dot-1`).click();
     const secondSrc = await loadedSlide(second, variant);
     if (id === "revodemo") expect(secondSrc).toContain("image_1790199142046");
-    if (testInfo.project.name === "desktop") {
-      await page.getByTestId(`button-${id}-carousel-prev`).click();
-    } else {
-      await page.getByTestId(`button-${id}-carousel-dot-0`).click();
-    }
+    await page.getByTestId(`button-${id}-carousel-dot-0`).click();
     await loadedSlide(page.getByRole("img", { name: `${prefix} - Capture 1` }), variant);
   }
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { Link } from "wouter";
-import { ArrowRight, CheckCircle2, Shield, Users, Vote, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, CheckCircle2, Shield, Users, Vote } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage, type Language } from "@/lib/language";
 
@@ -568,23 +568,6 @@ function ScreenshotCarousel({ images, altPrefix, id, labels }: { images: { src: 
             />
           </AnimatePresence>
         </div>
-
-        <button
-          onClick={goToPrevious}
-          aria-label={labels.previous}
-          className="absolute left-3 top-1/2 translate-y-2 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border hidden md:flex items-center justify-center text-foreground hover:bg-background transition-colors"
-          data-testid={`button-${id}-carousel-prev`}
-        >
-          <ChevronLeft size={20} />
-        </button>
-        <button
-          onClick={goToNext}
-          aria-label={labels.next}
-          className="absolute right-3 top-1/2 translate-y-2 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border hidden md:flex items-center justify-center text-foreground hover:bg-background transition-colors"
-          data-testid={`button-${id}-carousel-next`}
-        >
-          <ChevronRight size={20} />
-        </button>
       </div>
 
       <div className="flex justify-center gap-2 mt-4">
