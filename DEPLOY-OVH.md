@@ -360,26 +360,26 @@ plusieurs étapes et une revue spécifique avant de toucher à la production.
    ssh ubuntu@ADRESSE_DU_SERVEUR
    ```
 
-   Dans le terminal OVH, placer le SQL sous son nom fixe dans `/home/ubuntu`,
-   puis lancer le script installé par le déploiement :
+   Dans le terminal OVH, lancer le script installé par le déploiement :
 
    ```bash
-   cd /home/ubuntu/citizarm
-   install -m 600 ops/db/migrations/migration.sql /home/ubuntu/migration.sql
-   bash /home/ubuntu/migrate-ovh.sh
+   ~/migrate-ovh.sh
    ```
 
-   Le script refuse une autre base ou un SQL déjà appliqué, crée une sauvegarde
-   privée complète, la vérifie, puis exécute le SQL dans une transaction et
-   enregistre son empreinte. **Seulement après succès**, il déplace
-   `/home/ubuntu/migration.sql` vers `/home/ubuntu/citizarm-migrations/`
-   avec la date et l'empreinte dans le nom. En cas d'échec, le SQL reste en
-   place et la sauvegarde est conservée. **S'arrêter et examiner l'erreur**,
+   Le raccourci `~/migrate` peut aussi être utilisé s'il a été créé. Le script
+   lit directement le SQL publié, refuse une autre base ou un SQL déjà appliqué,
+   crée une sauvegarde privée complète, la vérifie, puis exécute le SQL dans une
+   transaction et enregistre son empreinte. **Seulement après succès**, il
+   conserve une copie datée dans `/home/ubuntu/citizarm-migrations/`.
+   Il laisse le fichier suivi par Git en place. En cas d'échec, la sauvegarde
+   est conservée et le SQL publié reste disponible. **S'arrêter et examiner l'erreur**,
    sans publier le code qui dépend du nouveau schéma. Les sauvegardes sont
    dans `/home/ubuntu/citizarm-backups/` et contiennent des données privées.
 3. Vérifier le résultat dans PostgreSQL/DBeaver, puis pousser le **code du
    site** : GitHub Actions le déploie sur OVH. Tester la fonctionnalité en
-   production. Conserver la sauvegarde selon une politique de rétention sûre.
+   production. Après le push sélectif de `./pubdb`, réaligner la branche `main`
+   locale avant de lancer `./pub` ; ce dernier pousse tous les commits locaux.
+   Conserver la sauvegarde selon une politique de rétention sûre.
 
 Ne pas réutiliser `ops/db/import-ovh.sh` pour une mise à jour : il a servi
 uniquement au transfert initial. Ne pas utiliser `docker compose down -v`.

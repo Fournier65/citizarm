@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Installed by GitHub Actions as /home/ubuntu/migrate-ovh.sh.
-# Run manually: backup, verify, apply /home/ubuntu/migration.sql, then archive it.
+# Run manually: snapshot the published SQL, backup, verify, apply, then archive.
 set -euo pipefail
 umask 077
 
 home=/home/ubuntu
 project="$home/citizarm"
-migration="$home/migration.sql"
+published_sql="$project/ops/db/migrations/migration.sql"
 archive_dir="$home/citizarm-migrations"
 backup_dir="$home/citizarm-backups"
 
@@ -14,11 +14,11 @@ if [ "$#" -ne 0 ]; then
   echo "Usage: bash /home/ubuntu/migrate-ovh.sh (no arguments)" >&2
   exit 1
 fi
-if [ ! -f "$migration" ] || [ -L "$migration" ] || [ ! -s "$migration" ]; then
-  echo "Missing or empty regular file: $migration; nothing changed" >&2
+if [ ! -f "$published_sql" ] || [ -L "$published_sql" ] || [ ! -s "$published_sql" ]; then
+  echo "Missing or empty published SQL: $published_sql; nothing changed" >&2
   exit 1
 fi
-if grep -Eiq '^[[:space:]]*(BEGIN|COMMIT|ROLLBACK)([[:space:];]|$)|^[[:space:]]*\\' "$migration"; then
+if grep -Eiq '^[[:space:]]*(BEGIN|COMMIT|ROLLBACK)([[:space:];]|$)|^[[:space:]]*\\' "$published_sql"; then
   echo "Migration must not manage transactions or contain psql commands" >&2
   exit 1
 fi
@@ -39,7 +39,7 @@ if [ "$identity" != "citizarm/citizarm" ]; then
   exit 1
 fi
 
-checksum="$(sha256sum "$migration" | cut -d ' ' -f 1)"
+checksum="$(sha256sum "$published_sql" | cut -d ' ' -f 1)"
 tracking_exists="$(db psql -X -A -t -v ON_ERROR_STOP=1 -U citizarm -d citizarm -c \
   "SELECT to_regclass('public.schema_migrations') IS NOT NULL")"
 if [ "$tracking_exists" = "t" ]; then
@@ -56,11 +56,23 @@ fi
 
 mkdir -p "$archive_dir" "$backup_dir"
 chmod 700 "$archive_dir" "$backup_dir"
-chmod 600 "$migration"
 name="migration_$(date -u +%Y%m%dT%H%M%S%NZ)_${checksum:0:12}"
 archive="$archive_dir/$name.sql"
 if [ -e "$archive" ]; then
   echo "Archive name collision; nothing changed" >&2
+  exit 1
+fi
+
+# Use a private snapshot so the SQL we execute, track and archive is identical,
+# even if a deployment updates the tracked source file during the backup.
+snapshot="$(mktemp "$archive_dir/.pending_XXXXXXXX.sql")"
+cleanup_snapshot() {
+  if [ -n "$snapshot" ]; then rm -f -- "$snapshot"; fi
+}
+trap cleanup_snapshot EXIT
+cp -- "$published_sql" "$snapshot"
+if [ "$(sha256sum "$snapshot" | cut -d ' ' -f 1)" != "$checksum" ] || ! cmp -s "$published_sql" "$snapshot"; then
+  echo "Published SQL changed during preparation; migration not started" >&2
   exit 1
 fi
 
@@ -77,7 +89,7 @@ fi
 echo "Verified backup: $backup"
 
 # A single connection and transaction keep the schema and its history together.
-# Failed SQL exits psql and rolls back; migration.sql remains in place.
+# Failed SQL exits psql and rolls back; the tracked SQL remains in place.
 {
   cat <<'SQL'
 BEGIN;
@@ -89,13 +101,15 @@ CREATE TABLE IF NOT EXISTS public.schema_migrations (
 );
 SQL
   printf "DO \$\$ BEGIN IF EXISTS (SELECT 1 FROM public.schema_migrations WHERE sha256 = '%s') THEN RAISE EXCEPTION 'Migration already applied'; END IF; END \$\$;\n" "$checksum"
-  cat "$migration"
+  cat "$snapshot"
   printf "\nINSERT INTO public.schema_migrations (name, sha256) VALUES ('%s', '%s');\n" "$name" "$checksum"
   printf 'COMMIT;\n'
 } | db psql -X -v ON_ERROR_STOP=1 -U citizarm -d citizarm
 
-if ! mv -n -- "$migration" "$archive" || [ -e "$migration" ]; then
-  echo "Database migration succeeded, but archiving failed. Do not rerun; check $migration and $archive." >&2
+if ! mv -n -- "$snapshot" "$archive" || [ -e "$snapshot" ]; then
+  echo "Database migration succeeded, but archiving failed. Do not rerun; check $snapshot and $archive." >&2
+  snapshot="" # Preserve the private snapshot for manual recovery.
   exit 1
 fi
+snapshot=""
 echo "Migration applied and archived at $archive"
