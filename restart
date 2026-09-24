@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# Maintenance manuelle du serveur OVH. Installer dans /home/ubuntu/restart.
+set -euo pipefail
+umask 077
+
+project=/home/ubuntu/citizarm
+backup_dir=/home/ubuntu/citizarm-backups
+
+if [ "$#" -gt 1 ] || { [ "$#" -eq 1 ] && [ "$1" != "--check" ]; }; then
+  echo "Usage : ./restart [--check] (depuis /home/ubuntu)" >&2
+  exit 1
+fi
+if [ ! -f "$project/docker-compose.yml" ] || [ ! -f "$project/.env" ]; then
+  echo "Projet OVH ou fichier .env introuvable dans $project ; arrêt." >&2
+  exit 1
+fi
+cd "$project"
+
+db() {
+  docker compose --env-file .env exec -T db "$@"
+}
+
+check_services() {
+  for attempt in {1..12}; do
+    if db psql -X -A -t -v ON_ERROR_STOP=1 -U citizarm -d citizarm -c "SELECT 1" 2>/dev/null |
+       grep -qx 1 &&
+       docker compose --env-file .env exec -T app node -e \
+         'fetch("http://127.0.0.1:5000/").then(r => { if (!r.ok) process.exitCode = 1; }).catch(() => { process.exitCode = 1; })' >/dev/null 2>&1; then
+      docker compose --env-file .env ps
+      echo "Base et application accessibles."
+      return 0
+    fi
+    sleep 5
+  done
+  echo "Base ou application indisponible après une minute ; examiner les conteneurs." >&2
+  docker compose --env-file .env ps || true
+  return 1
+}
+
+if [ "${1:-}" = "--check" ]; then
+  check_services
+  exit 0
+fi
+
+if [ ! -t 0 ]; then
+  echo "Lancer cette maintenance dans une session SSH interactive." >&2
+  exit 1
+fi
+sudo -v
+
+identity="$(db psql -X -A -t -v ON_ERROR_STOP=1 -U citizarm -d citizarm -c \
+  "SELECT current_database() || '/' || current_user")"
+if [ "$identity" != "citizarm/citizarm" ]; then
+  echo "Base inattendue : $identity ; aucune mise à jour lancée." >&2
+  exit 1
+fi
+
+mkdir -p "$backup_dir"
+chmod 700 "$backup_dir"
+backup="$(mktemp "$backup_dir/maintenance_$(date -u +%Y%m%dT%H%M%SZ)_XXXXXX.dump")"
+cleanup_incomplete_backup() { rm -f -- "$backup"; }
+trap cleanup_incomplete_backup EXIT
+if ! db pg_dump -U citizarm -d citizarm -Fc > "$backup"; then
+  echo "Sauvegarde échouée ; aucune mise à jour lancée." >&2
+  exit 1
+fi
+if [ ! -s "$backup" ] || ! db pg_restore --file=/dev/null < "$backup"; then
+  echo "Sauvegarde illisible ; aucune mise à jour lancée." >&2
+  exit 1
+fi
+trap - EXIT
+echo "Sauvegarde vérifiée : $backup"
+
+sudo apt-get update
+sudo apt-get upgrade
+
+if [ -e /var/run/reboot-required ]; then
+  echo "Un redémarrage est requis. Le site et la connexion SSH seront interrompus."
+  read -r -p "Redémarrer maintenant ? [o/N] " confirmation
+  case "$confirmation" in
+    o|O|oui|OUI)
+      echo "Après reconnexion : cd /home/ubuntu && ./restart --check"
+      sudo reboot
+      ;;
+    *)
+      echo "Redémarrage reporté. La sauvegarde est conservée : $backup"
+      ;;
+  esac
+else
+  echo "Aucun redémarrage demandé par Ubuntu. Vérification des services..."
+  check_services
+fi

@@ -384,6 +384,33 @@ plusieurs étapes et une revue spécifique avant de toucher à la production.
 Ne pas réutiliser `ops/db/import-ovh.sh` pour une mise à jour : il a servi
 uniquement au transfert initial. Ne pas utiliser `docker compose down -v`.
 
+### Maintenance Ubuntu du serveur OVH
+
+Le déploiement installe `/home/ubuntu/restart`, sans l'exécuter. Depuis une
+session SSH interactive, choisir un moment de faible trafic et lancer :
+
+```bash
+cd /home/ubuntu
+./restart
+```
+
+Le script vérifie la cible PostgreSQL, réalise et vérifie une sauvegarde privée
+dans `/home/ubuntu/citizarm-backups/`, puis lance `apt-get update` et
+`apt-get upgrade` (avec confirmation des paquets par Ubuntu). Il ne redémarre
+le serveur que si Ubuntu le demande, après une dernière confirmation. Un
+redémarrage coupe le site et la session SSH. Après reconnexion, vérifier :
+
+```bash
+cd /home/ubuntu
+./restart --check
+```
+
+Ce contrôle teste la base et l'application, sans relancer les mises à jour.
+Une maintenance interrompue ou une sauvegarde non vérifiée n'entraîne aucun
+redémarrage automatique. Ne pas utiliser `~/migrate` pour les mises à jour du
+système. Conserver et protéger les sauvegardes, qui contiennent des données
+personnelles.
+
 ### Vérifier l'envoi des emails en production
 
 La clé Resend configurée dans Replit n'est **pas** transférée au serveur OVH ou à GitHub Actions.
