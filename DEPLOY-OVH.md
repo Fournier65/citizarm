@@ -343,10 +343,11 @@ doivent être préparés et appliqués en migrations distinctes, après sauvegar
 
 ### Futures modifications de la base OVH (avant le code du site)
 
-Le lanceur reste dans le dossier CitiZarm :
-`/home/ubuntu/citizarm/ops/db/migrate-ovh.sh`. Le déploiement GitHub Actions
-met à jour ce fichier avec le dépôt, sans le copier à la racine du compte
-Ubuntu et sans lancer **aucune** migration.
+Le script source reste dans `ops/db/migrate-ovh.sh`. À chaque déploiement,
+GitHub Actions crée ou met à jour une copie pratique et exécutable :
+`/home/ubuntu/citizarm/migrate-ovh.sh`. Cette copie reste dans le dossier
+CitiZarm, pas à la racine du compte Ubuntu. Le déploiement ne lance **aucune**
+migration.
 Pour chaque nouvelle table ou colonne, créer ou mettre à jour le fichier SQL
 `ops/db/migrations/migration.sql` (toujours le même nom) et modifier
 `shared/schema.ts` en accord avec lui.
@@ -367,8 +368,13 @@ plusieurs étapes et une revue spécifique avant de toucher à la production.
    Dans le terminal OVH, lancer le script du projet :
 
    ```bash
-   bash /home/ubuntu/citizarm/ops/db/migrate-ovh.sh
+   cd ~/citizarm
+   ./migrate-ovh.sh
    ```
+
+   Depuis un autre dossier, utiliser `/home/ubuntu/citizarm/migrate-ovh.sh`.
+   La copie est générée depuis le script source à chaque déploiement ;
+   ne pas la modifier directement.
 
    Le script lit directement le SQL publié, refuse une autre base ou un SQL déjà appliqué,
    crée une sauvegarde privée complète, la vérifie, puis exécute le SQL dans une

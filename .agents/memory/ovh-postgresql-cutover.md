@@ -9,8 +9,8 @@ Keep the one-time Replit-to-OVH data transfer separate from future schema update
 
 **How to apply:** For later changes to the OVH database, plan reviewed, explicit migrations against that external target and verify live behavior afterward. Follow the project's deployment documentation for the actual procedure; do not assume Replit's Publish database flow or the one-time import maintains OVH.
 
-Keep CitiZarm's migration launcher inside its project rather than installing a shared launcher at the Ubuntu user's home root.
+Keep a deployment-maintained, convenient copy of CitiZarm's migration launcher directly in the application's server folder, not at the Ubuntu user's home root.
 
-**Why:** The user requested this to make its application-specific purpose clear when reusing the same server for another project.
+**Why:** The user clarified that the aim was to retain the simple human-facing command while moving the copy into CitiZarm's folder, not to remove the convenient copy altogether.
 
-**How to apply:** Preserve this isolation in future deployment changes; do not reintroduce a common migration launcher for multiple apps.
+**How to apply:** Preserve both the convenient application-specific copy and its refresh at deployment; do not replace it solely with an invocation of the nested source script or introduce a common launcher for multiple apps.
