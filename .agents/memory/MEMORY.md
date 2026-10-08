@@ -3,3 +3,5 @@
 - [OVH PostgreSQL cutover](ovh-postgresql-cutover.md) — one-time schema/data transfer was confirmed through both live forms; keep later schema changes separate from the initial import.
 - [Selective GitHub pushes](selective-github-pushes.md) — checkpointed attachments can diverge local main from a selectively pushed remote; reconcile safely before a normal push.
 - [Radix dropdowns in fixed headers](radix-dropdown-fixed-header.md) — modal scroll lock can shift headers; focus restoration can leave styling after a pointer selection.
+- [Email consent](newsletter-consent.md) — newsletter consent remains authoritative; contact unsubscribe deletes the corresponding contact record.
+- [Radix toast verification](radix-toast-verification.md) — scope text assertions to the notification region; hidden live announcements duplicate toast text.

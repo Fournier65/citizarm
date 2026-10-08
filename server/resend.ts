@@ -1,4 +1,6 @@
 import { Resend } from 'resend';
+import { buildContactAcknowledgement, buildContactNotification, type ContactEmailData, type StoredContactEmailData } from "./email/contact";
+import { createContactUnsubscribeUrl } from "./contact/unsubscribe";
 
 const FROM_EMAIL = 'contact@citizarm.fr';
 
@@ -15,40 +17,45 @@ export function getResendClient() {
   };
 }
 
-export async function sendContactNotification(data: {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}) {
+async function sendContactEmail(kind: "notification" | "acknowledgement",
+  build: () => ReturnType<typeof buildContactNotification> | ReturnType<typeof buildContactAcknowledgement>) {
   try {
-    console.log('[Resend] Attempting to send contact notification...');
+    const email = build();
     const { client, fromEmail } = getResendClient();
-    console.log('[Resend] Client obtained, fromEmail:', fromEmail);
     
     const result = await client.emails.send({
-      from: fromEmail,
-      to: 'contact@citizarm.fr',
-      subject: `${data.name} - [Contact] ${data.subject}`,
-      html: `
-        <h2>Nouveau message de contact</h2>
-        <p><strong>Nom:</strong> ${data.name}</p>
-        <p><strong>Email:</strong> ${data.email}</p>
-        <p><strong>Sujet:</strong> ${data.subject}</p>
-        <p><strong>Message:</strong></p>
-        <p>${data.message.replace(/\n/g, '<br>')}</p>
-      `
+      from: `CitiZarm <${fromEmail}>`,
+      ...email,
     });
     
     if (result.error || !result.data?.id) {
-      console.error('[Resend] Email rejected:', result.error ?? 'Missing email ID in Resend response');
+      console.error(`[Resend] Contact ${kind} rejected`);
       return false;
     }
 
-    console.log('[Resend] Email accepted:', result.data.id);
+    console.log(`[Resend] Contact ${kind} accepted`);
     return true;
-  } catch (error) {
-    console.error('[Resend] Failed to send contact notification:', error);
+  } catch {
+    console.error(`[Resend] Contact ${kind} failed`);
     return false;
   }
+}
+
+export function sendContactNotification(data: ContactEmailData) {
+  return sendContactEmail("notification", () => buildContactNotification(data));
+}
+
+export function sendContactAcknowledgement(data: StoredContactEmailData) {
+  return sendContactEmail("acknowledgement", () =>
+    buildContactAcknowledgement(data, createContactUnsubscribeUrl(data, "https://citizarm.fr")));
+}
+
+export async function sendContactEmails(data: StoredContactEmailData) {
+  // Each send handles its own failure. A stored message still gets a receipt
+  // even if the internal notification fails, and vice versa.
+  const [notificationSent, acknowledgementSent] = await Promise.all([
+    sendContactNotification(data),
+    sendContactAcknowledgement(data),
+  ]);
+  return { notificationSent, acknowledgementSent };
 }

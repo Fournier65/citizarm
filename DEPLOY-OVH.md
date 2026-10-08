@@ -136,6 +136,7 @@ services:
       PGDATABASE: citizarm
       PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       RESEND_API_KEY: ${RESEND_API_KEY}
+      SESSION_SECRET: ${SESSION_SECRET:-}
       NODE_ENV: production
     depends_on:
       db:
@@ -584,6 +585,13 @@ Ne pas utiliser `ops/db/migrate-ovh.sh` pour les mises à jour Ubuntu. Protéger
 les sauvegardes, qui contiennent des données personnelles.
 
 ### Vérifier l'envoi des emails en production
+
+Pour le modèle de newsletter et la désinscription, suivre `emails/README.md`.
+Définir aussi un `SESSION_SECRET` stable dans le `.env` privé OVH avant tout
+envoi de newsletter ou d'accusé de réception de contact ; il signe les liens et doit être conservé pour que les
+emails déjà envoyés restent désinscriptibles. Cela ne nécessite pas de
+migration SQL. Les notifications internes du formulaire de contact restent
+distinctes et ne portent pas les en-têtes de désinscription.
 
 La clé Resend configurée dans Replit n'est **pas** transférée au serveur OVH ou à GitHub Actions.
 Dans `/home/ubuntu/citizarm/.env` sur le serveur, définir `RESEND_API_KEY` avec une

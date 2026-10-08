@@ -15,6 +15,14 @@ const messages: Record<Language, {
   es: { savedTitle: "Mensaje guardado, notificación no enviada", savedBody: "Tu mensaje se ha guardado, pero no hemos podido enviar un correo al equipo. Puedes escribirnos a contact@citizarm.fr.", sentTitle: "¡Mensaje enviado!", sentBody: "Hemos recibido tu mensaje y responderemos lo antes posible.", errorTitle: "Error", contactError: "No se ha podido enviar el mensaje. Inténtalo de nuevo.", subscribedTitle: "Suscripción confirmada", subscribedBody: "Ya estás suscrito a nuestro boletín.", alreadySubscribed: "Esta dirección de correo ya está suscrita.", subscribeError: "No podemos suscribirte en este momento." },
 };
 
+const receiptMessages: Record<Language, { accepted: string; failed: string }> = {
+  fr: { accepted: "Un accusé de réception a été envoyé à votre adresse email.", failed: "L’accusé de réception n’a pas pu être envoyé à votre adresse email ; votre message reste enregistré." },
+  en: { accepted: "An acknowledgement has been sent to your email address.", failed: "We could not send the acknowledgement to your email address; your message is still saved." },
+  it: { accepted: "Una conferma di ricezione è stata inviata al tuo indirizzo email.", failed: "Non è stato possibile inviare la conferma al tuo indirizzo email; il messaggio resta salvato." },
+  de: { accepted: "Eine Empfangsbestätigung wurde an Ihre E-Mail-Adresse gesendet.", failed: "Die Empfangsbestätigung konnte nicht an Ihre E-Mail-Adresse gesendet werden; Ihre Nachricht bleibt gespeichert." },
+  es: { accepted: "Se ha enviado un acuse de recibo a tu dirección de correo.", failed: "No hemos podido enviar el acuse de recibo a tu correo; tu mensaje sigue guardado." },
+};
+
 export function useSubmitContact() {
   const { toast } = useToast();
   const { language } = useLanguage();
@@ -32,18 +40,20 @@ export function useSubmitContact() {
       if (!res.ok) throw new Error("CONTACT_ERROR");
       return api.contact.create.responses[201].parse(await res.json());
     },
-    onSuccess: ({ notificationSent }) => {
+    onSuccess: ({ notificationSent, acknowledgementSent }) => {
+      const receipt = acknowledgementSent === undefined ? "" :
+        acknowledgementSent ? receiptMessages[language].accepted : receiptMessages[language].failed;
       if (!notificationSent) {
         toast({
           title: t.savedTitle,
-          description: t.savedBody,
+          description: [t.savedBody, receipt].filter(Boolean).join(" "),
           variant: "destructive",
         });
         return;
       }
       toast({
         title: t.sentTitle,
-        description: t.sentBody,
+        description: [t.sentBody, receipt].filter(Boolean).join(" "),
       });
     },
     onError: () => {

@@ -23,6 +23,8 @@ export const newsletterSubscribers = pgTable("newsletter_subscribers", {
 export const insertContactSchema = createInsertSchema(contactMessages).omit({ 
   id: true, 
   createdAt: true 
+}).extend({
+  email: z.string().trim().email().max(254),
 });
 
 export const insertSubscriberSchema = createInsertSchema(newsletterSubscribers).omit({ 

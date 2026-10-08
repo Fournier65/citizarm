@@ -28,3 +28,45 @@ mtime_ms = 1791499607519
 storage_uri = "gcs://replit-rams-assets-picard/rams/assets/repl:9b04f0e6-80dd-45e4-a327-afeb38240dbb/a7b222d4-1021-4147-996f-8c9feaa875a5/6af71b5c-a156-4347-a860-f0f449c9f62b"
 storage_version_token = "1791499616062923"
 content_type = "application/octet-stream"
+
+[[outputs]]
+id = "SlIz8VkQTF7-gFbOwrMBU"
+uri = "file://downloads/citizarm-email-apercu.html"
+type = "html"
+title = "Aperçu de l’email responsive CitiZarm"
+description = "Modèle avec logo et pied de page de désinscription. Cet aperçu n’envoie aucun email ; son lien de désinscription est illustratif."
+logical_id = "627a24b6-c865-484a-9b8e-039cbdf87cde"
+content_hash = "sha256:7291eb6ee087861e3b2bb4d188e617461bba5506e998b38e054d1177855164a5"
+size = 90819
+mtime_ms = 1791502996881
+storage_uri = "gcs://replit-rams-assets-picard/rams/assets/repl:9b04f0e6-80dd-45e4-a327-afeb38240dbb/627a24b6-c865-484a-9b8e-039cbdf87cde/c1a61ea4-949e-484e-9859-0a6328be9ada"
+storage_version_token = "1791503153345513"
+content_type = "text/html"
+
+[[outputs]]
+id = "JhjJsGx81ApotEsLTnJzx"
+uri = "file://downloads/citizarm-contact-notification-apercu.html"
+type = "html"
+title = "Email de prise de contact — CitiZarm"
+description = "Aperçu du message reçu par l’équipe, avec logo et bouton de réponse au visiteur."
+logical_id = "cf0ab696-4931-4b68-b2c0-044d2180c06c"
+content_hash = "sha256:d1883ff632a1eb920fe8f1a94adfa176a8346288b57455e173a8847213d427a0"
+size = 90510
+mtime_ms = 1791503369794
+storage_uri = "gcs://replit-rams-assets-picard/rams/assets/repl:9b04f0e6-80dd-45e4-a327-afeb38240dbb/cf0ab696-4931-4b68-b2c0-044d2180c06c/8b3b3a6b-a509-4ca2-8377-264dd76a398e"
+storage_version_token = "1791503680171399"
+content_type = "text/html"
+
+[[outputs]]
+id = "R1E9dtBAEPKsCAQKMOvxF"
+uri = "file://downloads/citizarm-contact-accuse-reception-apercu.html"
+type = "html"
+title = "Accusé de réception — visiteur"
+description = "Aperçu de la confirmation automatique envoyée au visiteur après enregistrement de son message."
+logical_id = "5912465c-b301-4b12-86e5-78e538920e1b"
+content_hash = "sha256:0b7e75f84735b301b61bb03d6fdea02c5bb0691ea79c64546da7ec3708822923"
+size = 90425
+mtime_ms = 1791503369794
+storage_uri = "gcs://replit-rams-assets-picard/rams/assets/repl:9b04f0e6-80dd-45e4-a327-afeb38240dbb/5912465c-b301-4b12-86e5-78e538920e1b/50206bfd-9b79-4ae3-b0bc-0bcc5f0d9a95"
+storage_version_token = "1791503680679945"
+content_type = "text/html"

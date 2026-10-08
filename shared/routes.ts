@@ -27,7 +27,10 @@ export const api = {
       path: '/api/contact',
       input: insertContactSchema,
       responses: {
-        201: z.object({ notificationSent: z.boolean() }).passthrough(),
+        201: z.object({
+          notificationSent: z.boolean(),
+          acknowledgementSent: z.boolean().optional(),
+        }).passthrough(),
         400: errorSchemas.validation,
       },
     },

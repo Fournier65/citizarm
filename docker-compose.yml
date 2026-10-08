@@ -26,6 +26,7 @@ services:
       PGDATABASE: citizarm
       PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       RESEND_API_KEY: ${RESEND_API_KEY}
+      SESSION_SECRET: ${SESSION_SECRET:-}
       NODE_ENV: production
     depends_on:
       db:
