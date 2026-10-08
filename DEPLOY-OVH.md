@@ -341,8 +341,10 @@ doivent être préparés et appliqués en migrations distinctes, après sauvegar
 
 ### Futures modifications de la base OVH (avant le code du site)
 
-Le déploiement GitHub Actions copie le lanceur dans
-`/home/ubuntu/migrate-ovh.sh`, mais ne lance **aucune** migration.
+Le lanceur reste dans le dossier CitiZarm :
+`/home/ubuntu/citizarm/ops/db/migrate-ovh.sh`. Le déploiement GitHub Actions
+met à jour ce fichier avec le dépôt, sans le copier à la racine du compte
+Ubuntu et sans lancer **aucune** migration.
 Pour chaque nouvelle table ou colonne, créer ou mettre à jour le fichier SQL
 `ops/db/migrations/migration.sql` (toujours le même nom) et modifier
 `shared/schema.ts` en accord avec lui.
@@ -360,14 +362,13 @@ plusieurs étapes et une revue spécifique avant de toucher à la production.
    ssh ubuntu@ADRESSE_DU_SERVEUR
    ```
 
-   Dans le terminal OVH, lancer le script installé par le déploiement :
+   Dans le terminal OVH, lancer le script du projet :
 
    ```bash
-   ~/migrate-ovh.sh
+   bash /home/ubuntu/citizarm/ops/db/migrate-ovh.sh
    ```
 
-   Le raccourci `~/migrate` peut aussi être utilisé s'il a été créé. Le script
-   lit directement le SQL publié, refuse une autre base ou un SQL déjà appliqué,
+   Le script lit directement le SQL publié, refuse une autre base ou un SQL déjà appliqué,
    crée une sauvegarde privée complète, la vérifie, puis exécute le SQL dans une
    transaction et enregistre son empreinte. **Seulement après succès**, il
    conserve une copie datée dans `/home/ubuntu/citizarm-migrations/`.
@@ -383,6 +384,14 @@ plusieurs étapes et une revue spécifique avant de toucher à la production.
 
 Ne pas réutiliser `ops/db/import-ovh.sh` pour une mise à jour : il a servi
 uniquement au transfert initial. Ne pas utiliser `docker compose down -v`.
+
+**Ancienne installation :** une copie `/home/ubuntu/migrate-ovh.sh` et un
+éventuel raccourci `~/migrate` peuvent encore exister sur le serveur.
+Ils ne sont plus utilisés ni mis à jour par le déploiement. Après déploiement
+de cette modification, vérifier la présence du script dans le projet et les
+éventuelles références à ces anciens fichiers avant de les retirer manuellement.
+Le déploiement ne les supprime pas automatiquement. Ne pas supprimer les dossiers
+de sauvegardes ou d'archives.
 
 ### Maintenance Ubuntu du serveur OVH
 
@@ -407,7 +416,7 @@ cd /home/ubuntu
 
 Ce contrôle teste la base et l'application, sans relancer les mises à jour.
 Une maintenance interrompue ou une sauvegarde non vérifiée n'entraîne aucun
-redémarrage automatique. Ne pas utiliser `~/migrate` pour les mises à jour du
+redémarrage automatique. Ne pas utiliser `ops/db/migrate-ovh.sh` pour les mises à jour du
 système. Conserver et protéger les sauvegardes, qui contiennent des données
 personnelles.
 

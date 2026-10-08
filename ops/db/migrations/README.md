@@ -3,7 +3,9 @@
 Le fichier SQL à publier portera toujours le même nom :
 `ops/db/migrations/migration.sql`. Lors d'une nouvelle évolution, remplacer
 son contenu, publier d'abord **uniquement ce fichier**, puis sur OVH lancer
-`/home/ubuntu/migrate-ovh.sh`. Le lanceur lit le SQL publié et conserve une
+`bash /home/ubuntu/citizarm/ops/db/migrate-ovh.sh`. Le lanceur reste dans le
+dossier du projet, sans copie ni raccourci commun dans `/home/ubuntu`.
+Il lit le SQL publié et conserve une
 copie dans `/home/ubuntu/citizarm-migrations/` avec une date dans le nom
 après succès. Il ne renomme pas le fichier suivi par Git. Les anciennes versions
 restent aussi dans l'historique Git ; la base enregistre l'empreinte de chaque

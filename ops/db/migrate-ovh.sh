@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Installed by GitHub Actions as /home/ubuntu/migrate-ovh.sh.
+# Kept inside the CitiZarm repository: /home/ubuntu/citizarm/ops/db/migrate-ovh.sh.
 # Run manually: snapshot the published SQL, backup, verify, apply, then archive.
 set -euo pipefail
 umask 077
@@ -11,7 +11,7 @@ archive_dir="$home/citizarm-migrations"
 backup_dir="$home/citizarm-backups"
 
 if [ "$#" -ne 0 ]; then
-  echo "Usage: bash /home/ubuntu/migrate-ovh.sh (no arguments)" >&2
+  echo "Usage: bash /home/ubuntu/citizarm/ops/db/migrate-ovh.sh (no arguments)" >&2
   exit 1
 fi
 if [ ! -f "$published_sql" ] || [ -L "$published_sql" ] || [ ! -s "$published_sql" ]; then
