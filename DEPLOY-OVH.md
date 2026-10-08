@@ -1,14 +1,48 @@
-# Guide de déploiement : Replit → GitHub + OVH
+# CitiZarm — Guide de déploiement : Replit → GitHub + OVH
 
-Ce guide décrit comment migrer une application Replit vers un hébergement autonome sur un serveur OVH avec déploiement automatique via GitHub Actions.
+Ce guide décrit le déploiement de **CitiZarm** depuis Replit vers le dépôt
+**`Fournier65/citizarm`**, puis vers le serveur OVH, avec déploiement automatique
+via GitHub Actions. Les commandes et configurations ci-dessous utilisent les
+noms de CitiZarm, pas des noms d'application fictifs.
 
-> **Consigne pour l’IA d’un autre projet :** Cette documentation décrit le déploiement existant de CitiZarm. Utilise-la comme référence, pas comme une procédure à exécuter telle quelle. Le nouveau projet utilisera le même serveur OVH et un nouveau dépôt GitHub. Ne modifie ni les fichiers, ni les conteneurs, ni la base, ni les volumes, ni la configuration Nginx, ni les scripts de CitiZarm. Vérifie les ressources et ports disponibles, isole le nouveau projet et demande mon accord avant toute opération commune au serveur ou susceptible d’affecter CitiZarm. Corrige les limites du guide, notamment l’ordre de création du certificat HTTPS.
+> **Consigne pour l’IA d’un autre projet :** Cette documentation décrit le déploiement de référence de CitiZarm. Utilise-la comme exemple, pas comme une procédure à exécuter telle quelle. Le nouveau projet utilisera le même serveur OVH et un nouveau dépôt GitHub. Ne modifie ni les fichiers, ni les conteneurs, ni la base, ni les volumes, ni la configuration Nginx, ni les scripts de CitiZarm. Vérifie les ressources et ports disponibles, isole le nouveau projet et demande mon accord avant toute opération commune au serveur ou susceptible d’affecter CitiZarm. Crée une documentation propre au nouveau projet en adaptant les éléments indiqués en section 12 : remplacer le nom seul ne suffit pas.
+
+## Repères CitiZarm
+
+| Élément | Valeur utilisée pour CitiZarm |
+|---------|------------------------------|
+| Nom de l'application | `CitiZarm` |
+| Identifiant technique | `citizarm` |
+| Compte et dépôt GitHub | `Fournier65/citizarm` |
+| Branche publiée | `main` |
+| Remote Git dans Replit | `github` |
+| Remote Git dans le clone OVH | `origin` |
+| Compte Linux | `ubuntu` |
+| Dossier de l'application sur OVH | `/home/ubuntu/citizarm` |
+| Domaine | `citizarm.fr` et `www.citizarm.fr` |
+| Port hôte et port de l'application | `5000:5000` |
+| Base et rôle PostgreSQL | `citizarm` |
+| Services Docker Compose | `app` et `db` |
+| Volume logique PostgreSQL | `postgres_data`, dans le projet Compose CitiZarm |
+| Configuration Nginx | `/etc/nginx/sites-available/citizarm` |
+| Script source de migration | `ops/db/migrate-ovh.sh` |
+| Copie pratique prévue par le déploiement | `/home/ubuntu/citizarm/migrate-ovh.sh` |
+| Sauvegardes et archives SQL | `/home/ubuntu/citizarm-backups/` et `/home/ubuntu/citizarm-migrations/` |
+
+`IP_SERVEUR` désigne l'adresse réelle du serveur OVH : elle est volontairement
+à renseigner et n'est pas un nom d'application. Les valeurs de `.env.example`
+sont des exemples, jamais des identifiants utilisables.
+
+Les extraits de configuration correspondent aux fichiers du dépôt CitiZarm.
+Une modification locale ne devient effective sur OVH qu'après sa publication
+et un déploiement réussi. Les étapes de première installation décrivent la
+procédure initiale ; ne pas les rejouer sur le serveur déjà configuré.
 
 ---
 
 ## Rôles
 
-- **IA** : prépare les fichiers de configuration, crée les workflows, corrige les erreurs
+- **IA** : prépare les fichiers de configuration, crée les workflows, corrige les erreurs ; ne pousse vers GitHub qu'après accord explicite pour chaque publication
 - **Humain** : exécute les commandes sur le serveur, clique dans les interfaces GitHub/OVH, fournit les secrets
 
 ---
@@ -16,14 +50,14 @@ Ce guide décrit comment migrer une application Replit vers un hébergement auto
 ## 1. Prérequis
 
 ### L'humain doit avoir :
-- Un compte **GitHub**
+- Le compte **GitHub `Fournier65`**, avec accès au dépôt `citizarm`
 - Un compte **OVH** (ou autre hébergeur VPS/dédié)
-- Un **nom de domaine** avec accès à la gestion DNS
+- Le domaine **`citizarm.fr`**, avec accès à la gestion DNS
 - Une clé **API Resend** (ou autre service email utilisé)
 
 ### L'IA vérifie :
 - La structure du projet (`package.json`, scripts `build` et `start`)
-- Le port utilisé par l'application (généralement `5000`)
+- Le port utilisé par CitiZarm (`5000`)
 - Le dossier de build (`dist/`, `dist/public/`, etc.)
 - Les variables d'environnement nécessaires
 
@@ -31,7 +65,7 @@ Ce guide décrit comment migrer une application Replit vers un hébergement auto
 
 ## 2. L'IA prépare les fichiers de déploiement
 
-L'IA crée les fichiers suivants dans le projet Replit :
+Les fichiers suivants sont présents dans le projet Replit CitiZarm :
 
 ### `Dockerfile`
 Build multi-étapes : compilation du frontend (Vite) + backend (esbuild), puis image de production allégée.
@@ -78,13 +112,13 @@ services:
     image: postgres:16-alpine
     restart: always
     environment:
-      POSTGRES_DB: nomapp
-      POSTGRES_USER: nomapp
+      POSTGRES_DB: citizarm
+      POSTGRES_USER: citizarm
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U nomapp"]
+      test: ["CMD-SHELL", "pg_isready -U citizarm"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -93,13 +127,13 @@ services:
     build: .
     restart: always
     ports:
-      - "PORT_HOTE:5000"
+      - "5000:5000"
     environment:
       PGHOST: db
       PGPORT: "5432"
-      PGUSER: nomapp
-      PGDATABASE: nomapp
-      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGUSER: citizarm
+      PGDATABASE: citizarm
+      PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       RESEND_API_KEY: ${RESEND_API_KEY}
       NODE_ENV: production
     depends_on:
@@ -110,7 +144,8 @@ volumes:
   postgres_data:
 ```
 
-> ⚠️ Pour une **deuxième application** sur le même serveur, changer `PORT_HOTE` (ex: `5001:5000`) et les noms (`nomapp2`, `postgres_data2`).
+Le port hôte `5000` est celui de CitiZarm. Pour un autre projet, choisir un
+port hôte disponible et un projet Compose distinct ; voir la section 12.
 
 ### `nginx.conf`
 Reverse proxy avec HTTPS et redirection www → non-www :
@@ -118,32 +153,39 @@ Reverse proxy avec HTTPS et redirection www → non-www :
 ```nginx
 server {
     listen 80;
-    server_name mondomaine.fr www.mondomaine.fr;
+    server_name citizarm.fr www.citizarm.fr;
     location /.well-known/acme-challenge/ { root /var/www/certbot; }
-    location / { return 301 https://mondomaine.fr$request_uri; }
+    location / { return 301 https://citizarm.fr$request_uri; }
 }
 
 server {
     listen 443 ssl;
-    server_name www.mondomaine.fr;
-    ssl_certificate /etc/letsencrypt/live/mondomaine.fr/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/mondomaine.fr/privkey.pem;
-    return 301 https://mondomaine.fr$request_uri;
+    server_name www.citizarm.fr;
+    ssl_certificate /etc/letsencrypt/live/citizarm.fr/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/citizarm.fr/privkey.pem;
+    return 301 https://citizarm.fr$request_uri;
 }
 
 server {
     listen 443 ssl;
-    server_name mondomaine.fr;
-    ssl_certificate /etc/letsencrypt/live/mondomaine.fr/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/mondomaine.fr/privkey.pem;
+    server_name citizarm.fr;
+    ssl_certificate /etc/letsencrypt/live/citizarm.fr/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/citizarm.fr/privkey.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
     gzip on;
-    gzip_types text/plain text/css application/json application/javascript;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
+    gzip_min_length 1024;
     location / {
-        proxy_pass http://localhost:PORT_HOTE;
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
     }
 }
 ```
@@ -155,27 +197,39 @@ RESEND_API_KEY=re_xxxxxxxxxxxxxxxx
 ```
 
 ### `.gitignore`
-L'IA s'assure que `.env` est bien dans `.gitignore`.
+`.env` et les exports `*.dump` doivent rester ignorés par Git.
+La copie générée `/migrate-ovh.sh` est aussi ignorée ; le script source
+`ops/db/migrate-ovh.sh` reste suivi par Git.
 
 ---
 
 ## 3. L'humain connecte GitHub
 
-1. Dans Replit : icône **Git** → connecter le compte GitHub → créer un repo (ex: `nomapp`)
-2. Générer un **Personal Access Token** :
-   - GitHub → Settings → Developer settings → Tokens (classic)
-   - Cocher : ✅ `repo` et ✅ `workflow`
-3. Dans le **Shell Replit**, pousser le code :
+Le dépôt CitiZarm existe déjà : `https://github.com/Fournier65/citizarm`.
+Le remote utilisé dans Replit s'appelle `github`. À la première configuration
+seulement, si ce remote n'existe pas :
+
 ```bash
-git remote add github https://UTILISATEUR:TOKEN@github.com/UTILISATEUR/nomapp.git
+git remote add github https://github.com/Fournier65/citizarm.git
+```
+
+Utiliser l'authentification Git déjà autorisée ou un gestionnaire
+d'identifiants. Ne jamais placer de token dans l'URL du remote, la documentation
+ou le chat. Après vérification des fichiers à publier et accord explicite :
+
+```bash
 git push github main
 ```
 
-> Le remote `github` sera utilisé pour tous les futurs pushs.
+Après un push sélectif, vérifier et réaligner la branche locale avant un push
+normal : celui-ci envoie tous les commits locaux, pas seulement le fichier voulu.
 
 ---
 
 ## 4. L'humain crée le serveur OVH
+
+Cette étape a déjà été effectuée pour CitiZarm. Pour un deuxième projet sur
+ce serveur, ne pas créer ni réinstaller le serveur.
 
 1. Choisir une image **Ubuntu 22.04 ou 24.04 LTS**
 2. Récupérer l'IP et le mot de passe root par email OVH
@@ -189,6 +243,10 @@ ssh ubuntu@IP_SERVEUR
 ---
 
 ## 5. L'humain configure le serveur
+
+Procédure de première installation. Docker est déjà installé sur le serveur
+CitiZarm. Toute mise à jour ou tout redémarrage du serveur peut affecter tous
+les sites hébergés et doit être planifié avec l'humain.
 
 ### Mise à jour du système
 ```bash
@@ -211,8 +269,8 @@ docker run hello-world
 
 ```bash
 cd /home/ubuntu
-git clone https://github.com/UTILISATEUR/nomapp.git
-cd nomapp
+git clone https://github.com/Fournier65/citizarm.git
+cd citizarm
 cp .env.example .env
 nano .env
 ```
@@ -220,6 +278,11 @@ nano .env
 Remplir `.env` avec les vraies valeurs :
 - `POSTGRES_PASSWORD` : inventer un mot de passe fort et le sauvegarder
 - `RESEND_API_KEY` : récupérer sur resend.com → API Keys
+
+Ne pas refaire ce clonage ni écraser le `.env` de CitiZarm sur son installation
+existante. Pour un dépôt privé, le serveur doit disposer d'un accès de lecture
+au dépôt pour le clonage et les futurs `git pull`. Cet accès est distinct de
+la clé qui permet à GitHub Actions de se connecter au serveur.
 
 ---
 
@@ -229,7 +292,7 @@ Dans le panneau DNS du registrar, pointer le domaine vers l'IP du serveur :
 - Type `A`, nom `@`, valeur `IP_SERVEUR`
 - Type `A`, nom `www`, valeur `IP_SERVEUR`
 
-Vérifier la propagation sur : https://dnschecker.org/#A/mondomaine.fr
+Vérifier la propagation sur : https://dnschecker.org/#A/citizarm.fr
 
 ---
 
@@ -241,47 +304,53 @@ sudo apt install -y nginx certbot python3-certbot-nginx
 
 Config Nginx temporaire (HTTP seulement, avant SSL) :
 ```bash
-sudo tee /etc/nginx/sites-available/nomapp > /dev/null << 'EOF'
+sudo tee /etc/nginx/sites-available/citizarm > /dev/null << 'EOF'
 server {
     listen 80;
-    server_name mondomaine.fr www.mondomaine.fr;
+    server_name citizarm.fr www.citizarm.fr;
     location /.well-known/acme-challenge/ { root /var/www/certbot; }
     location / {
-        proxy_pass http://localhost:PORT_HOTE;
+        proxy_pass http://localhost:5000;
         proxy_set_header Host $host;
     }
 }
 EOF
-sudo ln -sf /etc/nginx/sites-available/nomapp /etc/nginx/sites-enabled/nomapp
-sudo rm -f /etc/nginx/sites-enabled/default
+sudo ln -sf /etc/nginx/sites-available/citizarm /etc/nginx/sites-enabled/citizarm
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
 Obtenir le certificat (une fois le DNS propagé) :
 ```bash
-sudo certbot --nginx -d mondomaine.fr -d www.mondomaine.fr
+sudo certbot --nginx -d citizarm.fr -d www.citizarm.fr
 ```
 
 Ensuite, appliquer la config Nginx complète (avec HTTPS) depuis le fichier `nginx.conf` du projet.
+Toujours obtenir le certificat avant d'activer une configuration qui référence
+ses fichiers. Sur le serveur existant, ne pas remplacer la configuration
+CitiZarm ni supprimer les autres sites Nginx pour installer un autre projet.
 
 ---
 
 ## 9. L'humain lance l'application
 
 ```bash
-cd /home/ubuntu/nomapp
+cd /home/ubuntu/citizarm
 docker compose --env-file .env up -d --build
 ```
 
 Vérifier que tout tourne :
 ```bash
 docker compose ps
-docker logs nomapp-app-1
+docker compose logs --tail=100 app
 ```
 
-Tester : `https://mondomaine.fr`
+Tester : `https://citizarm.fr`
 
 ### Initialiser la base OVH depuis la production Replit (une seule fois)
+
+L'initialisation et le transfert ont déjà été effectués pour CitiZarm.
+Cette section conserve la procédure de référence ; ne pas la relancer sur
+la base existante.
 
 `docker compose up` crée le serveur PostgreSQL et sa base, **mais pas les tables**.
 La production Replit et la base OVH sont distinctes. La commande `db:push` lancée
@@ -362,7 +431,7 @@ plusieurs étapes et une revue spécifique avant de toucher à la production.
 2. Depuis PowerShell sur le laptop, ouvrir une session SSH :
 
    ```powershell
-   ssh ubuntu@ADRESSE_DU_SERVEUR
+    ssh ubuntu@IP_SERVEUR
    ```
 
    Dans le terminal OVH, lancer le script du projet :
@@ -405,6 +474,10 @@ de sauvegardes ou d'archives.
 
 Le déploiement installe `/home/ubuntu/restart`, sans l'exécuter. Depuis une
 session SSH interactive, choisir un moment de faible trafic et lancer :
+
+**Attention :** ce script vérifie et sauvegarde la base CitiZarm, mais met à jour
+Ubuntu pour tout le serveur. Pour un autre projet, ne pas écraser ce script ;
+prévoir la sauvegarde des autres applications avant une maintenance commune.
 
 ```bash
 cd /home/ubuntu
@@ -464,7 +537,7 @@ l'envoi : ne pas le soumettre plusieurs fois pour éviter les doublons.
 
 ## 10. L'IA configure le déploiement automatique (GitHub Actions)
 
-L'IA crée `.github/workflows/deploy.yml` :
+Le fichier `.github/workflows/deploy.yml` du dépôt CitiZarm contient :
 
 ```yaml
 name: Deploy to OVH
@@ -485,13 +558,21 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu/nomapp
+            set -e
+            cd /home/ubuntu/citizarm
             git pull origin main
+            install -m 700 ops/db/migrate-ovh.sh /home/ubuntu/citizarm/migrate-ovh.sh
+            install -m 700 restart /home/ubuntu/restart
             docker compose --env-file .env up -d --build
             docker image prune -f
 ```
 
 ### L'humain crée une clé SSH dédiée (sans passphrase) sur le serveur :
+
+Procédure initiale uniquement. Si `~/.ssh/deploy_key` existe déjà, ne pas
+l'écraser. Pour un autre projet, réutiliser un accès autorisé ou prévoir une
+clé distincte avec l'accord de l'humain.
+
 ```bash
 ssh-keygen -t ed25519 -C "github-actions" -f ~/.ssh/deploy_key -N ""
 cat ~/.ssh/deploy_key.pub >> ~/.ssh/authorized_keys
@@ -499,7 +580,7 @@ cat ~/.ssh/deploy_key  # copier ce contenu pour GitHub
 ```
 
 ### L'humain ajoute 3 secrets sur GitHub :
-GitHub → repo → Settings → Secrets and variables → Actions → New repository secret
+GitHub → dépôt `Fournier65/citizarm` → Settings → Secrets and variables → Actions → New repository secret
 
 | Nom | Valeur |
 |-----|--------|
@@ -511,57 +592,69 @@ GitHub → repo → Settings → Secrets and variables → Actions → New repos
 
 ## 11. Workflow de mise à jour (après setup)
 
-Pour chaque modification du site :
+Pour chaque modification du site, après accord explicite de publication :
 1. Modifier le code dans Replit
 2. Depuis le Shell Replit :
 ```bash
 git push github main
 ```
-3. GitHub Actions déploie automatiquement (~40 secondes)
+3. GitHub Actions déploie automatiquement ; attendre le succès du workflow
+   `Deploy to OVH`, puis vérifier le site. La durée dépend du build.
 
 ---
 
-## 12. Deuxième application sur le même serveur
+## 12. Créer la documentation d'un autre projet à partir de CitiZarm
 
-Les étapes **4 à 6** (création serveur, Docker) sont déjà faites.
+L'autre IA doit copier ce guide dans son propre projet et l'adapter, sans
+modifier le déploiement CitiZarm. Les commandes des sections précédentes
+ciblent CitiZarm : ne pas les exécuter telles quelles pour un nouveau site.
 
-### Différences à appliquer :
+### Éléments à remplacer ou à vérifier
 
-**`docker-compose.yml`** : port hôte différent (ex: `5001:5000`), noms de volumes/services uniques
+| Référence CitiZarm | Adaptation pour le nouveau projet |
+|-------------------|-----------------------------------|
+| `CitiZarm` / `citizarm` | Nom affiché et identifiant technique de la nouvelle application |
+| `Fournier65/citizarm` | Nouveau dépôt ; conserver `Fournier65` si le compte GitHub reste le même |
+| `/home/ubuntu/citizarm` | Dossier propre au nouveau projet, y compris dans le workflow et les scripts |
+| `citizarm.fr`, `www.citizarm.fr` | Nouveau domaine et domaine expéditeur vérifié dans Resend |
+| `/etc/nginx/sites-available/citizarm` et le lien dans `sites-enabled` | Nouveau fichier et nouveau lien Nginx ; ne pas remplacer ceux de CitiZarm |
+| `/etc/letsencrypt/live/citizarm.fr/` | Certificat du nouveau domaine, créé avant d'activer HTTPS |
+| Port hôte `5000` | Port libre différent ; adapter le port publié et la cible `proxy_pass` ensemble |
+| Base et rôle PostgreSQL `citizarm` | Base, rôle et mot de passe propres au nouveau projet |
+| Volume logique `postgres_data` | Volume isolé par un projet Compose distinct ; ne jamais utiliser le volume de CitiZarm |
+| Scripts SQL et d'import | Schéma, tables, séquences et contrôles propres à la nouvelle application |
+| Copie `citizarm/migrate-ovh.sh` | Copie pratique dans le dossier du nouveau projet, générée depuis son propre script |
+| `citizarm-backups`, `citizarm-migrations`, `citizarm-replit-prod-data.dump` | Dossiers et fichier d'export propres au nouveau projet |
+| Variables et secrets | Valeurs du nouveau projet ; ne pas recopier le `.env` de CitiZarm |
 
-**Nginx** : ajouter un nouveau fichier de config pour le nouveau domaine :
-```bash
-sudo tee /etc/nginx/sites-available/nomapp2 > /dev/null << 'EOF'
-server {
-    listen 80;
-    server_name mondomaine2.fr www.mondomaine2.fr;
-    location / { return 301 https://mondomaine2.fr$request_uri; }
-}
-server {
-    listen 443 ssl;
-    server_name mondomaine2.fr;
-    ssl_certificate /etc/letsencrypt/live/mondomaine2.fr/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/mondomaine2.fr/privkey.pem;
-    location / {
-        proxy_pass http://localhost:5001;
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-EOF
-sudo ln -sf /etc/nginx/sites-available/nomapp2 /etc/nginx/sites-enabled/nomapp2
-sudo nginx -t && sudo systemctl reload nginx
-sudo certbot --nginx -d mondomaine2.fr -d www.mondomaine2.fr
-```
+Le compte Linux `ubuntu`, l'adresse `IP_SERVEUR` et les outils déjà installés
+restent communs si l'on utilise le même serveur. Le port interne `5000`, les
+services `app` / `db` et le nom logique `postgres_data` peuvent être conservés
+uniquement avec des projets Compose et des volumes réellement séparés.
+Le framework, le build et le port interne doivent être vérifiés : les fichiers
+Docker de CitiZarm ne conviennent pas forcément à une application différente.
 
-**Cloner et lancer** :
-```bash
-cd /home/ubuntu
-git clone https://github.com/UTILISATEUR/nomapp2.git
-cd nomapp2
-cp .env.example .env && nano .env
-docker compose --env-file .env up -d --build
-```
+### Ordre de travail pour l'autre IA
+
+1. Examiner les ports, les ressources et les applications existantes, sans les
+   modifier. Ne pas refaire la création du serveur ni l'installation de Docker.
+2. Préparer le nouveau dépôt, ses fichiers et sa documentation avec les valeurs
+   propres au projet. Adapter aussi les contrôles codés en dur dans les scripts :
+   remplacer uniquement le nom dans ce guide ne modifie pas ces scripts.
+3. Cloner le nouveau dépôt dans son propre dossier, créer son `.env` protégé et
+   configurer l'accès de lecture Git ainsi que les secrets de son dépôt GitHub.
+4. Préparer sa base et son schéma avec sauvegarde et vérifications. L'import
+   CitiZarm concerne deux tables métier : il ne peut pas être réutilisé sans
+   adaptation pour un autre schéma.
+5. Ajouter un site Nginx HTTP distinct, configurer son DNS, obtenir son certificat,
+   puis activer HTTPS. Valider Nginx avant chaque rechargement.
+6. Vérifier les deux sites, l'accès à chaque base et l'envoi des emails.
+   Prévoir une procédure de retour arrière limitée au nouveau projet.
+
+Ne pas écraser `/home/ubuntu/restart`, ni réutiliser les sauvegardes, les
+identifiants ou les volumes de CitiZarm. Les mises à jour Ubuntu, les
+redémarrages et le nettoyage Docker sont communs au serveur : obtenir l'accord
+de l'humain avant une opération susceptible d'affecter les autres applications.
 
 ---
 
@@ -571,7 +664,7 @@ docker compose --env-file .env up -d --build
 |----------|-------|----------|
 | Tables absentes sur OVH | `docker compose up` ne crée pas le schéma applicatif | Appliquer la procédure d'initialisation ci-dessus, une seule fois |
 | Container en restart loop | `drizzle-kit push` bloque en non-interactif | `entrypoint.sh` ne doit PAS lancer drizzle-kit |
-| `git pull` ne met pas à jour | Modifications locales sur le serveur | `git reset --hard origin/main && git pull` |
+| `git pull` ne met pas à jour | Modifications locales sur le serveur | Examiner `git status` et sauvegarder les changements ; ne pas utiliser `git reset --hard` sans accord explicite |
 | Site non mis à jour après push | Cache Docker | `docker compose build --no-cache && docker compose up -d` |
 | SSH GitHub Actions échoue | Clé avec passphrase | Créer une clé dédiée sans passphrase (`-N ""`) |
 | Site affiche encore Replit | Propagation DNS locale | Vider le cache DNS ou tester sur mobile 4G |
