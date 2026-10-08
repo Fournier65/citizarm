@@ -464,34 +464,124 @@ supprimer les dossiers de sauvegardes ou d'archives.
 
 ### Maintenance Ubuntu du serveur OVH
 
-Le déploiement installe `/home/ubuntu/restart`, sans l'exécuter. Depuis une
-session SSH interactive, choisir un moment de faible trafic et lancer :
+Le fichier source `restart` se trouve à la racine du dépôt CitiZarm.
+Le déploiement le copie dans `/home/ubuntu/restart`, sans l'exécuter.
+Ce script est une **maintenance du serveur**, pas un redémarrage limité
+à l'application CitiZarm.
 
-**Attention :** ce script vérifie et sauvegarde la base CitiZarm, mais met à jour
-Ubuntu pour tout le serveur. Pour un autre projet, ne pas écraser ce script ;
-prévoir la sauvegarde des autres applications avant une maintenance commune.
+#### Ce que fait le script
+
+Depuis une session SSH interactive, choisir un moment de faible trafic :
 
 ```bash
 cd /home/ubuntu
 ./restart
 ```
 
-Le script vérifie la cible PostgreSQL, réalise et vérifie une sauvegarde privée
-dans `/home/ubuntu/citizarm-backups/`, puis lance `apt-get update` et
-`apt-get upgrade` (avec confirmation des paquets par Ubuntu). Il ne redémarre
-le serveur que si Ubuntu le demande, après une dernière confirmation. Un
-redémarrage coupe le site et la session SSH. Après reconnexion, vérifier :
+1. Vérifie la présence du projet `/home/ubuntu/citizarm` et de son `.env`,
+   l'accès administrateur Ubuntu et l'identité PostgreSQL `citizarm/citizarm`.
+2. Sauvegarde **uniquement la base PostgreSQL `citizarm`**, via `pg_dump -Fc`,
+   dans `/home/ubuntu/citizarm-backups/`. Les permissions des fichiers et du
+   dossier sont privées.
+3. Vérifie que l'archive est non vide et lisible avec `pg_restore`.
+   Ce contrôle ne remplace pas un essai de restauration dans une base de test.
+   Si la sauvegarde échoue ou n'est pas lisible, aucune mise à jour Ubuntu
+   n'est lancée.
+4. Exécute `apt-get update` puis `apt-get upgrade`, avec confirmation des
+   paquets par Ubuntu. Ces opérations concernent **tout le serveur** et peuvent
+   aussi redémarrer des services.
+5. Si Ubuntu signale qu'un redémarrage est nécessaire, demande une confirmation.
+   Seule une réponse affirmative déclenche `sudo reboot`. Ce redémarrage coupe
+   **toutes les applications hébergées**, ainsi que la session SSH.
+6. Si aucun redémarrage n'est nécessaire, vérifie la base et l'application
+   CitiZarm. Après un redémarrage, lancer ce contrôle à la reconnexion :
 
 ```bash
 cd /home/ubuntu
 ./restart --check
 ```
 
-Ce contrôle teste la base et l'application, sans relancer les mises à jour.
-Une maintenance interrompue ou une sauvegarde non vérifiée n'entraîne aucun
-redémarrage automatique. Ne pas utiliser `ops/db/migrate-ovh.sh` pour les mises à jour du
-système. Conserver et protéger les sauvegardes, qui contiennent des données
-personnelles.
+`--check` vérifie **uniquement CitiZarm** : accès PostgreSQL et réponse HTTP de
+l'application dans son conteneur. Il ne sauvegarde rien, ne met pas Ubuntu à
+jour et ne redémarre pas le serveur.
+
+**Limite importante :** le script ne sauvegarde ni les bases des autres
+applications, ni les rôles PostgreSQL, ni les fichiers applicatifs, volumes
+de fichiers téléversés ou configurations du serveur. Ne pas interpréter
+« sauvegarde vérifiée » comme une sauvegarde complète du serveur.
+
+#### Comment étendre `restart` pour sauvegarder toutes les bases
+
+L'adaptation ci-dessous doit être réalisée et testée **avant** d'utiliser
+`restart` comme maintenance commune à plusieurs applications. Elle décrit
+les modifications à apporter ; le script fourni ne les effectue pas encore.
+
+1. **Recenser toutes les bases et leurs instances.** Pour chaque application,
+   identifier le dossier du projet, le nom de projet Compose utilisé, le
+   service PostgreSQL, le rôle autorisé, les bases à sauvegarder et un dossier
+   privé de sauvegarde. CitiZarm utilise `/home/ubuntu/citizarm`, le service
+   `db`, le rôle et la base `citizarm`, et `/home/ubuntu/citizarm-backups/`.
+   Vérifier cet inventaire dans chaque instance PostgreSQL, pas seulement dans
+   les fichiers Compose : une instance peut contenir plusieurs bases.
+   Ne pas traiter deux références à la même instance/base comme deux cibles
+   distinctes. Exclure seulement les bases techniques identifiées comme telles ;
+   une base nommée `postgres` peut aussi contenir des données applicatives.
+2. **Paramétrer les cibles dans le source `restart`.** Remplacer les variables
+   uniques `project` et `backup_dir` par une liste de cibles explicites.
+   Pour chaque cible, conserver le projet, le service, le rôle, le nom de base,
+   le dossier de sauvegarde et les paramètres de contrôle de l'application.
+   Ne pas mettre de mots de passe dans cette liste : conserver les identifiants
+   dans les fichiers `.env` protégés propres aux projets.
+3. **Adapter `db()` et les contrôles.** Chaque commande doit sélectionner le bon
+   projet Compose, son `.env` et son service PostgreSQL, sans dépendre du
+   dernier dossier courant. Remplacer les valeurs codées en dur `citizarm`
+   dans les commandes `psql` et `pg_dump` par celles de la cible. Vérifier
+   l'identité de chaque base et du rôle avant toute sauvegarde ; toute cible
+   absente, ambiguë ou inaccessible doit provoquer un arrêt, pas être ignorée.
+4. **Sauvegarder chaque base dans une boucle.** Pour chaque cible, créer une
+   archive complète `pg_dump -Fc`, avec un nom comportant l'application, la base
+   et la date. Conserver `umask 077`, des dossiers privés et le contrôle de
+   lisibilité de chaque archive. Conserver les sauvegardes réussies si une
+   cible suivante échoue, et identifier précisément les cibles en échec.
+   Une base non PostgreSQL nécessite une procédure de sauvegarde adaptée à
+   son moteur ; `pg_dump` ne la couvre pas.
+5. **Sauvegarder les rôles nécessaires à une restauration.** Les archives
+   `pg_dump` ne contiennent pas les rôles PostgreSQL. Prévoir, une fois par
+   instance, un export protégé des objets globaux avec
+   `pg_dumpall --globals-only`, au moyen d'un rôle disposant des permissions
+   nécessaires, et tester sa restauration. Cet export peut contenir des
+   données d'authentification : ne jamais l'afficher, le mettre dans Git ou le
+   joindre à la documentation.
+6. **Bloquer la maintenance tant que toutes les sauvegardes ne sont pas
+   vérifiées.** Placer `apt-get update`, `apt-get upgrade` et la demande de
+   redémarrage **après** la réussite de l'ensemble des sauvegardes et des
+   contrôles. Si une seule cible échoue, arrêter le script avec un message
+   clair, sans mettre Ubuntu à jour ni redémarrer.
+7. **Étendre `check_services()` et `--check`.** Vérifier chaque base et chaque
+   application après maintenance, avec son service et son port réels, et
+   retourner un échec si une cible ne répond pas. Ne pas limiter la vérification
+   au port interne `5000` ou à l'application CitiZarm.
+8. **Tester puis publier le source de façon contrôlée.** Tester la restauration
+   des archives dans des instances isolées, sans modifier les bases de
+   production. Simuler aussi une base inaccessible et une sauvegarde échouée
+   pour vérifier le blocage des mises à jour. Après accord explicite, publier
+   le fichier source `restart` : le workflow CitiZarm mettra à jour
+   `/home/ubuntu/restart`. Ne pas modifier seulement la copie sur le serveur,
+   car elle serait remplacée au déploiement suivant. Les déploiements des autres
+   applications ne doivent pas écraser ce script commun.
+
+Chaque export PostgreSQL est cohérent pour sa base, mais plusieurs exports
+successifs ne constituent pas une sauvegarde simultanée de toutes les bases.
+Si des données doivent rester cohérentes entre plusieurs applications,
+suspendre leurs écritures ensemble pendant la sauvegarde, avec l'accord de
+l'humain. Prévoir aussi une copie protégée hors du serveur et une politique
+de rétention : une sauvegarde stockée uniquement sur OVH ne protège pas d'une
+perte du serveur.
+
+Conserver une seule commande de maintenance, `./restart`, et un seul contrôle,
+`./restart --check`, avec un périmètre clairement documenté après adaptation.
+Ne pas utiliser `ops/db/migrate-ovh.sh` pour les mises à jour Ubuntu. Protéger
+les sauvegardes, qui contiennent des données personnelles.
 
 ### Vérifier l'envoi des emails en production
 
