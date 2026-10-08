@@ -35,8 +35,9 @@ sont des exemples, jamais des identifiants utilisables.
 
 Les extraits de configuration correspondent aux fichiers du dépôt CitiZarm.
 Une modification locale ne devient effective sur OVH qu'après sa publication
-et un déploiement réussi. Les étapes de première installation décrivent la
-procédure initiale ; ne pas les rejouer sur le serveur déjà configuré.
+et un déploiement réussi. Le guide présente une seule procédure de configuration
+et d'exploitation. Ne pas recréer les ressources existantes ni relancer l'import
+sur une base contenant des données.
 
 ---
 
@@ -205,9 +206,8 @@ La copie générée `/migrate-ovh.sh` est aussi ignorée ; le script source
 
 ## 3. L'humain connecte GitHub
 
-Le dépôt CitiZarm existe déjà : `https://github.com/Fournier65/citizarm`.
-Le remote utilisé dans Replit s'appelle `github`. À la première configuration
-seulement, si ce remote n'existe pas :
+Le dépôt CitiZarm est `https://github.com/Fournier65/citizarm`.
+Le remote utilisé dans Replit s'appelle `github`. S'il n'existe pas, le créer :
 
 ```bash
 git remote add github https://github.com/Fournier65/citizarm.git
@@ -228,8 +228,8 @@ normal : celui-ci envoie tous les commits locaux, pas seulement le fichier voulu
 
 ## 4. L'humain crée le serveur OVH
 
-Cette étape a déjà été effectuée pour CitiZarm. Pour un deuxième projet sur
-ce serveur, ne pas créer ni réinstaller le serveur.
+Créer le serveur uniquement s'il n'existe pas. Pour un deuxième projet sur
+le même serveur, utiliser le serveur existant sans le réinstaller.
 
 1. Choisir une image **Ubuntu 22.04 ou 24.04 LTS**
 2. Récupérer l'IP et le mot de passe root par email OVH
@@ -244,9 +244,9 @@ ssh ubuntu@IP_SERVEUR
 
 ## 5. L'humain configure le serveur
 
-Procédure de première installation. Docker est déjà installé sur le serveur
-CitiZarm. Toute mise à jour ou tout redémarrage du serveur peut affecter tous
-les sites hébergés et doit être planifié avec l'humain.
+Installer les outils uniquement s'ils sont absents. Toute mise à jour ou tout
+redémarrage du serveur peut affecter tous les sites hébergés et doit être
+planifié avec l'humain.
 
 ### Mise à jour du système
 ```bash
@@ -348,9 +348,8 @@ Tester : `https://citizarm.fr`
 
 ### Initialiser la base OVH depuis la production Replit (une seule fois)
 
-L'initialisation et le transfert ont déjà été effectués pour CitiZarm.
-Cette section conserve la procédure de référence ; ne pas la relancer sur
-la base existante.
+Cette étape s'applique uniquement à une base cible sans tables métier.
+Ne pas lancer l'import sur une base existante contenant ces tables.
 
 `docker compose up` crée le serveur PostgreSQL et sa base, **mais pas les tables**.
 La production Replit et la base OVH sont distinctes. La commande `db:push` lancée
@@ -358,16 +357,16 @@ sur Replit ne modifie pas OVH. Le script `ops/db/import-ovh.sh` refuse de
 continuer si l'une des deux tables existe déjà sur OVH : il ne fusionne pas
 des données et ne les efface jamais.
 
-Avant toute migration, changer tout mot de passe divulgué. Si la base OVH a déjà
-été créée avec l'ancien mot de passe, changer le mot de passe **dans PostgreSQL**
+Avant toute migration, changer tout mot de passe divulgué. Pour une base
+existante, changer le mot de passe **dans PostgreSQL**
 avec `docker compose --env-file .env exec db psql -U citizarm -d citizarm`
 puis `\password citizarm` (saisie masquée), et **ensuite** mettre la même valeur
 dans `.env`. Modifier seulement `.env` ne change pas le mot de passe du rôle
 enregistré dans le volume PostgreSQL. Ne jamais faire `docker compose down -v`.
-Le conteneur `app` reçoit maintenant le mot de passe séparément via `PGPASSWORD` :
+Le conteneur `app` reçoit le mot de passe séparément via `PGPASSWORD` :
 les caractères réservés aux URL, comme `#`, ne cassent plus la connexion.
 
-1. Bloquer temporairement les nouvelles inscriptions/messages sur l'ancien site
+1. Bloquer temporairement les nouvelles inscriptions/messages sur le site Replit
    pendant l'export et la bascule, pour ne pas perdre les données arrivées entre
    l'export et la restauration. Prévoir une courte indisponibilité pour l'import.
 2. Dans le Shell **Replit**, demander dans l'outil Database > Settings l'URL de
@@ -420,18 +419,18 @@ migration.
 Pour chaque nouvelle table ou colonne, créer ou mettre à jour le fichier SQL
 `ops/db/migrations/migration.sql` (toujours le même nom) et modifier
 `shared/schema.ts` en accord avec lui.
-Privilégier une modification compatible avec l'ancienne version du site
+Privilégier une modification compatible avec la version du site en service
 (nouvelle table, colonne nullable ou dotée d'une valeur par défaut). Pour
 supprimer/renommer des éléments ou modifier des données existantes, prévoir
 plusieurs étapes et une revue spécifique avant de toucher à la production.
 
 1. Tester la migration hors production. Pousser **d'abord la migration seule** :
-   le déploiement automatique reconstruit alors l'ancien site, sans changer
+   le déploiement automatique reconstruit alors le site en service, sans changer
    la base. Attendre que le déploiement ait transféré le fichier sur OVH.
 2. Depuis PowerShell sur le laptop, ouvrir une session SSH :
 
    ```powershell
-    ssh ubuntu@IP_SERVEUR
+   ssh ubuntu@IP_SERVEUR
    ```
 
    Dans le terminal OVH, lancer le script du projet :
@@ -441,7 +440,6 @@ plusieurs étapes et une revue spécifique avant de toucher à la production.
    ./migrate-ovh.sh
    ```
 
-   Depuis un autre dossier, utiliser `/home/ubuntu/citizarm/migrate-ovh.sh`.
    La copie est générée depuis le script source à chaque déploiement ;
    ne pas la modifier directement.
 
@@ -459,16 +457,10 @@ plusieurs étapes et une revue spécifique avant de toucher à la production.
    locale avant de lancer `./pub` ; ce dernier pousse tous les commits locaux.
    Conserver la sauvegarde selon une politique de rétention sûre.
 
-Ne pas réutiliser `ops/db/import-ovh.sh` pour une mise à jour : il a servi
-uniquement au transfert initial. Ne pas utiliser `docker compose down -v`.
-
-**Ancienne installation :** une copie `/home/ubuntu/migrate-ovh.sh` et un
-éventuel raccourci `~/migrate` peuvent encore exister sur le serveur.
-Ils ne sont plus utilisés ni mis à jour par le déploiement. Après déploiement
-de cette modification, vérifier la présence du script dans le projet et les
-éventuelles références à ces anciens fichiers avant de les retirer manuellement.
-Le déploiement ne les supprime pas automatiquement. Ne pas supprimer les dossiers
-de sauvegardes ou d'archives.
+Utiliser uniquement `migrate-ovh.sh` pour les évolutions du schéma.
+`ops/db/import-ovh.sh` est réservé au transfert vers une base sans tables métier,
+pas aux mises à jour. Ne pas utiliser `docker compose down -v` et ne pas
+supprimer les dossiers de sauvegardes ou d'archives.
 
 ### Maintenance Ubuntu du serveur OVH
 
@@ -569,7 +561,7 @@ jobs:
 
 ### L'humain crée une clé SSH dédiée (sans passphrase) sur le serveur :
 
-Procédure initiale uniquement. Si `~/.ssh/deploy_key` existe déjà, ne pas
+Créer la clé uniquement si elle n'existe pas. Si `~/.ssh/deploy_key` existe, ne pas
 l'écraser. Pour un autre projet, réutiliser un accès autorisé ou prévoir une
 clé distincte avec l'accord de l'humain.
 

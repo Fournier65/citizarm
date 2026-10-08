@@ -14,3 +14,9 @@ Keep a deployment-maintained, convenient copy of CitiZarm's migration launcher d
 **Why:** The user clarified that the aim was to retain the simple human-facing command while moving the copy into CitiZarm's folder, not to remove the convenient copy altogether.
 
 **How to apply:** Preserve both the convenient application-specific copy and its refresh at deployment; do not replace it solely with an invocation of the nested source script or introduce a common launcher for multiple apps.
+
+Document one current deployment procedure, without legacy installation variants or obsolete launcher locations.
+
+**Why:** The user explicitly asked to remove notions of an old installation to avoid confusion for humans and the AI adapting the guide to another app.
+
+**How to apply:** Keep historical context out of the deployment guide while retaining necessary safety checks for existing resources and the distinction between initial data import and later schema migrations.
