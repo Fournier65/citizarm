@@ -2,6 +2,8 @@
 
 Ce guide décrit comment migrer une application Replit vers un hébergement autonome sur un serveur OVH avec déploiement automatique via GitHub Actions.
 
+> **Consigne pour l’IA d’un autre projet :** Cette documentation décrit le déploiement existant de CitiZarm. Utilise-la comme référence, pas comme une procédure à exécuter telle quelle. Le nouveau projet utilisera le même serveur OVH et un nouveau dépôt GitHub. Ne modifie ni les fichiers, ni les conteneurs, ni la base, ni les volumes, ni la configuration Nginx, ni les scripts de CitiZarm. Vérifie les ressources et ports disponibles, isole le nouveau projet et demande mon accord avant toute opération commune au serveur ou susceptible d’affecter CitiZarm. Corrige les limites du guide, notamment l’ordre de création du certificat HTTPS.
+
 ---
 
 ## Rôles
