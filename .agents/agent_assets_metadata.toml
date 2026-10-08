@@ -14,3 +14,17 @@ mtime_ms = 1791495482730
 storage_uri = "gcs://replit-rams-assets-picard/rams/assets/repl:9b04f0e6-80dd-45e4-a327-afeb38240dbb/3f0c3fd4-edb3-4d09-8d59-8f7b2f858f51/4cdf13f6-b451-4eaf-804f-51e5c67a6c11"
 storage_version_token = "1791495792087458"
 content_type = "text/markdown"
+
+[[outputs]]
+id = "Qp553gAQm5NxerxPy6wMp"
+uri = "file://downloads/guide-deploiement-ovh.zip"
+type = "unspecified"
+title = "Télécharger le guide OVH — ZIP"
+description = "Archive contenant DEPLOY-OVH.md. À enregistrer sur ton ordinateur puis à décompresser."
+logical_id = "a7b222d4-1021-4147-996f-8c9feaa875a5"
+content_hash = "sha256:4493e1fb66f9fa827eeac188408d7bb6dd635fd51c00c47504a76cc7b900cb2b"
+size = 7521
+mtime_ms = 1791496264145
+storage_uri = "gcs://replit-rams-assets-picard/rams/assets/repl:9b04f0e6-80dd-45e4-a327-afeb38240dbb/a7b222d4-1021-4147-996f-8c9feaa875a5/3ab93c32-9808-4a23-b426-c74241199403"
+storage_version_token = "1791496268588360"
+content_type = "application/octet-stream"
