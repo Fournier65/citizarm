@@ -670,6 +670,29 @@ GitHub → dépôt `Fournier65/citizarm` → Settings → Secrets and variables 
 | `SERVER_USER` | `ubuntu` |
 | `SSH_PRIVATE_KEY` | Contenu de `~/.ssh/deploy_key` (de `-----BEGIN` à `-----END`) |
 
+### L'humain vérifie que GitHub Actions est autorisé :
+
+Avant le premier push de déploiement, dans le dépôt `Fournier65/citizarm` :
+
+1. Ouvrir **Settings → Actions → General**.
+2. Dans **Actions permissions**, vérifier que GitHub Actions n'est pas
+   désactivé et que la politique autorise **`appleboy/ssh-action@v1.0.3`**,
+   utilisée par le workflow. Si les actions sont limitées à une liste,
+   autoriser cette action en respectant la politique du dépôt ; il n'est pas
+   nécessaire d'autoriser toutes les actions.
+3. Enregistrer avec **Save** si un réglage a changé. Si une restriction est
+   imposée par une organisation, demander à son administrateur de l'autoriser.
+4. Vérifier que `.github/workflows/deploy.yml` est présent sur la branche
+   **`main`** et que les trois secrets ci-dessus sont définis dans ce dépôt.
+5. Après le push autorisé sur `main`, ouvrir l'onglet **Actions** et vérifier
+   que **Deploy to OVH** s'est déclenché et termine avec le statut **Success**,
+   puis vérifier `https://citizarm.fr`.
+
+Si les permissions sont déjà correctes, ne pas les modifier. Un push sur une
+autre branche ne déclenche pas ce workflow. Si aucun déploiement ne démarre,
+vérifier la branche, la présence du workflow et les permissions avant de
+relancer un push.
+
 ---
 
 ## 11. Workflow de mise à jour (après setup)
