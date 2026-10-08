@@ -8,3 +8,9 @@ Keep the one-time Replit-to-OVH data transfer separate from future schema update
 **Why:** The external OVH deployment initially had a running PostgreSQL database without application tables, while the app's password-containing URI was invalid when the password contained a URL-reserved character. Explicit initialization, data transfer, and separate connection settings resolved the reported form failures.
 
 **How to apply:** For later changes to the OVH database, plan reviewed, explicit migrations against that external target and verify live behavior afterward. Follow the project's deployment documentation for the actual procedure; do not assume Replit's Publish database flow or the one-time import maintains OVH.
+
+Keep CitiZarm's migration launcher inside its project rather than installing a shared launcher at the Ubuntu user's home root.
+
+**Why:** The user requested this to make its application-specific purpose clear when reusing the same server for another project.
+
+**How to apply:** Preserve this isolation in future deployment changes; do not reintroduce a common migration launcher for multiple apps.
