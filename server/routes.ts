@@ -18,7 +18,7 @@ export async function registerRoutes(
   if (process.env.NODE_ENV !== "production") {
     app.get("/api/newsletter/template-preview", (_req, res) => {
       res.set("Cache-Control", "no-store").type("html")
-        .send(renderNewsletterPreview("/email-logo.png").html);
+        .send(renderNewsletterPreview("/email-logo.png?v=20261009").html);
     });
     app.get("/api/contact/email-preview", (req, res) => {
       const data = {

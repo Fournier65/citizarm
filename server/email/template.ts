@@ -97,7 +97,7 @@ export function renderEmailTemplate(data: EmailTemplateData): {
                   <tr>
                     <td valign="middle" width="48" style="width:48px;padding-right:13px;">
                       <a href="${siteUrl}" style="display:inline-block;text-decoration:none;">
-                        <img src="${logoUrl}" width="44" height="44" alt="CitiZarm" style="display:block;width:44px;height:44px;border:0;border-radius:9px;background-color:#ffffff;object-fit:cover;">
+                        <img src="${logoUrl}" width="44" height="44" alt="CitiZarm" style="display:block;width:44px;height:44px;border:0;border-radius:50%;object-fit:contain;">
                       </a>
                     </td>
                     <td valign="middle" style="font-family:Arial,Helvetica,sans-serif;font-size:22px;line-height:28px;font-weight:bold;letter-spacing:-0.4px;color:#ffffff;">

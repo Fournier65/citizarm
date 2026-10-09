@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logo from "@assets/IMG_7582_1767640004029-96.webp";
+import logo from "@assets/citizarm-logo-96.webp";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { type Language, useLanguage } from "@/lib/language";
@@ -60,7 +60,7 @@ export function Navigation() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative overflow-hidden rounded-lg shadow-sm border border-border w-10 h-10 md:w-12 md:h-12 bg-background flex items-center justify-center">
+            <div className="relative overflow-hidden rounded-full shadow-sm border border-border w-10 h-10 md:w-12 md:h-12 bg-background flex items-center justify-center">
               <img 
                 src={logo} 
                 alt="citiZarm Logo" 

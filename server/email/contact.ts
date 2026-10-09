@@ -9,7 +9,7 @@ export type StoredContactEmailData = ContactEmailData & Pick<ContactMessage, "id
 const SITE_URL = "https://citizarm.fr";
 const baseTemplate = {
   siteUrl: SITE_URL,
-  logoUrl: `${SITE_URL}/email-logo.png`,
+  logoUrl: `${SITE_URL}/email-logo.png?v=20261009`,
   categoryLabel: "Contact CitiZarm",
   closingText: "L’équipe CitiZarm",
 };

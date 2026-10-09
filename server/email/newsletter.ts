@@ -35,7 +35,7 @@ export function buildNewsletterEmail(subscriber: Subscriber, content: Newsletter
     ...content,
     siteUrl: site.origin,
     ctaUrl,
-    logoUrl: new URL("/email-logo.png", site.origin).toString(),
+    logoUrl: new URL("/email-logo.png?v=20261009", site.origin).toString(),
     unsubscribeUrl,
   });
   return {

@@ -18,7 +18,7 @@ const template = renderNewsletterTemplate({
   ctaLabel: "{{ctaLabel}}",
   ctaUrl: "{{ctaUrl}}",
   unsubscribeUrl: "{{unsubscribeUrl}}",
-  logoUrl: "https://citizarm.fr/email-logo.png",
+  logoUrl: "https://citizarm.fr/email-logo.png?v=20261009",
   siteUrl: "https://citizarm.fr",
 });
 await writeFile("emails/citizarm-template.html", template.html);
@@ -33,6 +33,6 @@ for (const [name, email] of [
   ["accuse-reception", buildContactAcknowledgement(contact, "#desinscription-contact-exemple")],
 ] as const) {
   await writeFile(`downloads/citizarm-contact-${name}-apercu.html`,
-    email.html.replaceAll("https://citizarm.fr/email-logo.png", `data:image/png;base64,${logo.toString("base64")}`));
+    email.html.replaceAll("https://citizarm.fr/email-logo.png?v=20261009", `data:image/png;base64,${logo.toString("base64")}`));
 }
 console.log("Modèle HTML et aperçu autonome générés. Aucun email envoyé.");

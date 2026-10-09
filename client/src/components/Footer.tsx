@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { ArrowRight, Mail, MapPin } from "lucide-react";
 import { SiX } from "react-icons/si";
 import { useSubscribeNewsletter } from "@/hooks/use-contact";
-import logo from "@assets/IMG_7582_1767640004029-96.webp";
+import logo from "@assets/citizarm-logo-96.webp";
 import { type Language, useLanguage } from "@/lib/language";
 
 const copy: Record<Language, {
@@ -63,8 +63,8 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-4 space-y-6">
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-white p-0.5 overflow-hidden">
-                <img src={logo} alt="citiZarm" className="w-full h-full object-cover rounded-md" />
+              <div className="w-10 h-10 rounded-full bg-white p-0.5 overflow-hidden">
+                <img src={logo} alt="citiZarm" className="w-full h-full object-contain rounded-full" />
               </div>
               <span className="font-display font-bold text-2xl tracking-tight">citiZarm</span>
             </Link>
