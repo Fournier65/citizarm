@@ -63,7 +63,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-4 space-y-6">
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white p-0.5 overflow-hidden">
+              <div className="w-10 h-10 shrink-0">
                 <img src={logo} alt="citiZarm" className="w-full h-full object-contain rounded-full" />
               </div>
               <span className="font-display font-bold text-2xl tracking-tight">citiZarm</span>
