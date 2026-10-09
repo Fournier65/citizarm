@@ -5,3 +5,4 @@
 - [Radix dropdowns in fixed headers](radix-dropdown-fixed-header.md) — modal scroll lock can shift headers; focus restoration can leave styling after a pointer selection.
 - [Email consent](newsletter-consent.md) — newsletter consent remains authoritative; contact unsubscribe deletes the corresponding contact record.
 - [Radix toast verification](radix-toast-verification.md) — scope text assertions to the notification region; hidden live announcements duplicate toast text.
+- [Choix des logos](logo-roles.md) — le hero conserve l'ancien logo ; le nouveau logo rond reste dans l'en-tête, le pied de page et les emails.

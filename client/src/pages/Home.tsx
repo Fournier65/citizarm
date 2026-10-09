@@ -321,8 +321,8 @@ function LazySection({ children, className, fallbackHeight = "400px", id }: { ch
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SectionHeading } from "@/components/SectionHeading";
-import logo160 from "@assets/citizarm-logo-160.webp";
-import logo256 from "@assets/citizarm-logo-256.webp";
+import logo160 from "@assets/IMG_7582_1767640004029-160.webp";
+import logo256 from "@assets/IMG_7582_1767640004029-256.webp";
 import heroBg from "@assets/hero-background.webp";
 import aacScreenshot1 from "@assets/image_1767721768477.webp";
 import aacScreenshot1Small from "@assets/image_1767721768477-720.webp";
@@ -638,7 +638,7 @@ export default function Home() {
               transition={{ duration: 0.5 }}
               className="mb-8 flex justify-center"
             >
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full shadow-xl overflow-hidden border-4 border-background bg-background">
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl shadow-xl overflow-hidden border-4 border-background bg-background">
                 <img
                   src={logo256}
                   srcSet={`${logo160} 160w, ${logo256} 256w`}
